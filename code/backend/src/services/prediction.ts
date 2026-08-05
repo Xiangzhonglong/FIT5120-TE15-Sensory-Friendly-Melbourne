@@ -1,5 +1,5 @@
 import type { SensoryAlert } from "@sensory-melbourne/contracts";
-import type { PedestrianSensor } from "../data/mock-data.js";
+import type { PedestrianSensor } from "../domain.js";
 import { classifySensoryLevel, clamp01, sensorIntensity } from "./scoring.js";
 
 export function createPredictedAlert(

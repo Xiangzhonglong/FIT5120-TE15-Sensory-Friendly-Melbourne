@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { PedestrianSensor } from "../src/data/mock-data.js";
+import type { PedestrianSensor } from "../src/domain.js";
 import { classifySensoryLevel, routeCrowdScore, sensorIntensity } from "../src/services/scoring.js";
 
 describe("sensory scoring", () => {

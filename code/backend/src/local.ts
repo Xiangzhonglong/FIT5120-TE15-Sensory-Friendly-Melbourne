@@ -11,6 +11,12 @@ createServer(async (request, response) => {
   const result = await routeRequest({
     rawPath: url.pathname,
     body: chunks.length ? Buffer.concat(chunks).toString("utf8") : null,
+    headers: Object.fromEntries(
+      Object.entries(request.headers).map(([key, value]) => [
+        key,
+        Array.isArray(value) ? value.join(",") : value
+      ])
+    ),
     queryStringParameters: Object.fromEntries(url.searchParams.entries()),
     requestContext: {
       requestId: randomUUID(),
