@@ -1,0 +1,22 @@
+{
+  "name": "@sensory-melbourne/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/local.ts",
+    "build": "esbuild src/handler.ts --bundle --platform=node --target=node24 --format=esm --outfile=dist/index.mjs --sourcemap",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@sensory-melbourne/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.2",
+    "esbuild": "0.28.1",
+    "tsx": "4.23.7",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
+  }
+}
