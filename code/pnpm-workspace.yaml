@@ -1,0 +1,9 @@
+packages:
+  - frontend
+  - backend
+  - packages/*
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - mapbox-gl@3.28.0
+  - tsx@4.23.7
