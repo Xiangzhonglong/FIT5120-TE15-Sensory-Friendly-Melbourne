@@ -1,28 +1,28 @@
-# 团队协作与分支规范
+# Team contribution and branch workflow
 
-## 分支模型
+## Branch model
 
-- `main`：唯一集成分支，始终保持可构建、可演示；不直接在此分支开发或提交。
-- `dev/<github-id>`：每位成员的个人开发分支，例如 `dev/zzha0659`。
-- `feature/<short-name>`：可选的短期功能分支；需要时从个人开发分支或最新 `main` 创建。
+- `main` is the only integration branch. It must remain buildable and demonstrable; do not develop or commit directly on it.
+- `dev/<github-id>` is each member's personal development branch, for example `dev/zzha0659`.
+- `feature/<short-name>` is an optional short-lived branch created from the relevant personal branch or the latest `main`.
 
-## 开发流程
+## Development workflow
 
-1. 开始工作前更新本地 `main`：
+1. Update local `main` before starting work:
 
    ```bash
    git switch main
    git pull --ff-only origin main
    ```
 
-2. 切换到个人分支，并把最新 `main` 合入个人分支：
+2. Move to the personal branch and merge the latest `main`:
 
    ```bash
    git switch dev/<github-id>
    git merge main
    ```
 
-3. 在 `code/` 中开发并运行质量检查：
+3. Work from `code/` and run the quality checks:
 
    ```bash
    cd code
@@ -30,7 +30,7 @@
    pnpm check
    ```
 
-4. 提交并推送个人分支：
+4. Commit and push the personal branch:
 
    ```bash
    git add --all
@@ -38,23 +38,23 @@
    git push -u origin dev/<github-id>
    ```
 
-5. 在 GitHub 创建 Pull Request，目标分支选择 `main`。至少一名其他成员 Review、自动检查通过且问题解决后再合并。
+5. Open a pull request into `main`. Obtain at least one review from another member, pass the automated checks, and resolve review comments before merging.
 
-## Commit 建议
+## Commit prefixes
 
-- `feat:` 新功能
-- `fix:` 修复问题
-- `docs:` 文档修改
-- `test:` 测试修改
-- `refactor:` 不改变行为的代码整理
-- `chore:` 依赖、工具或工程维护
+- `feat:` new capability
+- `fix:` defect correction
+- `docs:` documentation changes
+- `test:` test additions or corrections
+- `refactor:` structural change without intended behaviour changes
+- `chore:` dependencies, tooling, or repository maintenance
 
-一次提交尽量只解决一个主题。禁止提交 `.env`、Token、AWS 凭据、`node_modules`、`dist` 或临时文件。
+Keep each commit focused on one subject. Never commit `.env` files, tokens, AWS credentials, `node_modules`, `dist`, or temporary output.
 
-## Pull Request 要求
+## Pull request requirements
 
-- 说明改了什么、为什么改。
-- 标明对应的 User Story / Definition of Done。
-- 提供测试结果；页面修改应附截图或录屏。
-- 列出尚未完成或需要后续处理的事项。
-- 不自行批准自己的 PR；由其他成员完成 Review。
+- Explain what changed and why.
+- Reference the relevant user story or Definition of Done.
+- Include test results; attach screenshots or recordings for visible page changes.
+- List incomplete work and required follow-up actions.
+- Do not approve your own pull request; another member must complete the review.
