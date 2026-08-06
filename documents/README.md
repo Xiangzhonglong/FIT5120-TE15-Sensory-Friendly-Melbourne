@@ -1,11 +1,6 @@
 # Documents
 
-## `source/`
-
-保留项目启动时收到的原始材料，不在这里直接修改内容：
-
-- `Onboarding-requirements.pdf`：Epic、User Stories、Data Sources 与 Definition of Done。
-- `Sensory-Friendly-Melbourne-architecture.docx`：基于需求形成的实施与技术架构材料。
+本仓库只保留可维护的项目说明文档。团队内部使用的 PDF/DOCX 原始材料保留在本地 `source/` 目录，不纳入 Git 跟踪或对外上传。
 
 ## `project/`
 
@@ -13,4 +8,4 @@
 - `architecture.md`：系统边界、请求流、集成点、安全与运维决策。
 - `requirements-traceability.md`：需求到代码与验收证据的追踪矩阵。
 
-上传 GitHub 时建议保留本目录，方便导师和团队成员追溯需求来源。若仓库未来必须公开，请先确认原始 PDF/DOCX 是否允许公开分发。
+上传 GitHub 前，请确认只包含可公开的项目说明和技术文档。

@@ -18,8 +18,7 @@ CalmPath Melbourne - FIT5120 Onboarding Team project for the 2026 Semester 2 onb
 │  ├─ scripts/                  # 离线预处理脚本
 │  └─ infra/                    # AWS SAM / CloudFormation
 └─ documents/
-   ├─ source/                   # 原始 PDF / DOCX 需求材料
-   └─ project/                  # 项目梳理、架构与需求追踪
+   └─ project/                  # 项目梳理、架构与需求追踪
 ```
 
 ## 本地启动
@@ -51,7 +50,6 @@ pnpm check
 - [系统架构](documents/project/architecture.md)
 - [需求与 DoD 追踪](documents/project/requirements-traceability.md)
 - [AWS 部署说明](code/infra/README.md)
-- [原始需求材料](documents/source/)
 - [团队协作与分支规范](CONTRIBUTING.md)
 
 ## 上传 GitHub 前
