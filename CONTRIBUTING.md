@@ -3,8 +3,15 @@
 ## Branch model
 
 - `main` is the only integration branch. It must remain buildable and demonstrable; do not develop or commit directly on it.
-- `dev/<github-id>` is each member's persistent development branch, for example `dev/xiangzhonglong`.
-- `feature/<short-name>` is an optional short-lived branch for isolated work. Create it from the latest `main` or from the relevant personal development branch.
+- Work is divided by functional module and technical deliverable. Use the assigned branch name:
+  - `data/pedestrian-cleaning`
+  - `data/quiet-spaces-cleaning`
+  - `feature/mapbox-routing`
+  - `feature/sensory-route-api`
+  - `feature/quiet-space-finder`
+  - `feature/frontend-route-planner`
+  - `infra/aws-deployment`
+- Create workstream branches from the latest `main` and merge them through pull requests only.
 
 ## Development workflow
 
@@ -15,11 +22,10 @@
    git pull --ff-only origin main
    ```
 
-2. Move to the personal branch and integrate the latest `main`:
+2. Create or switch to the assigned workstream branch:
 
    ```bash
-   git switch dev/<github-id>
-   git merge main
+   git switch -c <workstream-branch>
    ```
 
 3. Work from `code/` and run the complete quality gate:
@@ -30,12 +36,12 @@
    pnpm check
    ```
 
-4. Commit and push the personal branch:
+4. Commit and push the workstream branch:
 
    ```bash
    git add --all
    git commit -m "feat: concise description"
-   git push -u origin dev/<github-id>
+   git push -u origin <workstream-branch>
    ```
 
 5. Open a pull request into `main`. Obtain at least one review from another member, pass automated checks, and resolve review comments before merging.
