@@ -5,6 +5,7 @@ coverage/
 .env.*
 !.env.example
 .aws-sam/
+.vercel/
 .DS_Store
 Thumbs.db
 Desktop.ini
