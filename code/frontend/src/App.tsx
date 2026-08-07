@@ -13,6 +13,13 @@ const destinations = {
   "Flinders Street Station": { lat: -37.8183, lng: 144.9671 }
 } as const;
 
+const dataModeLabels = {
+  MOCK: "Demo data",
+  SNAPSHOT: "Saved snapshot",
+  LIVE: "Live data",
+  MIXED: "Mixed data sources"
+} as const;
+
 export function App() {
   const [destination, setDestination] = useState<keyof typeof destinations>("Melbourne Central");
   const [threshold, setThreshold] = useState(0.6);
@@ -70,7 +77,7 @@ export function App() {
         <div className="planner-layout">
           <aside><SearchPanel destination={destination} threshold={threshold} busy={busy} onDestinationChange={(value) => setDestination(value as keyof typeof destinations)} onThresholdChange={setThreshold} onSubmit={() => void runSearch()} /></aside>
           <section className="map-region" aria-labelledby="map-heading">
-            <div className="map-heading-row"><div><div className="section-kicker">Selected route</div><h2 id="map-heading">{selectedRoute?.name ?? "Melbourne CBD"}</h2></div><span className="data-time">{result?.mode === "MOCK" ? "Demo snapshot" : "Live data"}</span></div>
+            <div className="map-heading-row"><div><div className="section-kicker">Selected route</div><h2 id="map-heading">{selectedRoute?.name ?? "Melbourne CBD"}</h2></div><span className="data-time">{result ? dataModeLabels[result.mode] : "Loading data"}</span></div>
             <MapPanel route={selectedRoute} quietSpaces={result?.quietSpaces ?? []} />
           </section>
         </div>

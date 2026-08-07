@@ -4,7 +4,19 @@ import { App } from "./App";
 
 vi.mock("./services/api", () => ({
   searchRoutes: vi.fn().mockResolvedValue({
-    routes: [], alerts: [], quietSpaces: [], generatedAt: "2026-08-05T00:00:00Z", dataTimestamp: "2026-08-05T00:00:00Z", mode: "MOCK"
+    routes: [],
+    alerts: [],
+    quietSpaces: [],
+    transportAccess: [],
+    generatedAt: "2026-08-05T00:00:00Z",
+    dataTimestamp: "2026-08-05T00:00:00Z",
+    mode: "MOCK",
+    dataSources: {
+      routing: { source: "test", mode: "MOCK", timestamp: "2026-08-05T00:00:00Z", confidence: "MEDIUM", stale: false },
+      pedestrian: { source: "test", mode: "MOCK", timestamp: "2026-08-05T00:00:00Z", confidence: "MEDIUM", stale: false },
+      quietSpaces: { source: "test", mode: "MOCK", timestamp: "2026-08-05T00:00:00Z", confidence: "LOW", stale: false },
+      transport: { source: "test", mode: "MOCK", timestamp: "2026-08-05T00:00:00Z", confidence: "LOW", stale: false }
+    }
   })
 }));
 

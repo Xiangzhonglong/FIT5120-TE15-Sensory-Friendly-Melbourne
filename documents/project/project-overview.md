@@ -1,73 +1,65 @@
 # Sensory-Friendly Melbourne project overview
 
-## Project goal
+## Product goal
 
-Provide a no-login walking-route comparison tool for sensory-sensitive adults travelling through Melbourne CBD. Rather than simply recommending the shortest route, the system combines candidate walking routes with nearby pedestrian data to provide explainable sensory-load levels, congestion alerts, alternative routes, and nearby public places where a user may pause.
+The project provides a no-login walking route comparison tool for sensory-sensitive adults travelling through Melbourne CBD. It does not simply recommend the shortest route. It combines candidate walking routes with nearby pedestrian data to produce explainable crowd-load levels, tolerance-based warnings, calmer alternatives and nearby public places that may offer a lower-stimulation pause.
 
-## Epics
+## Epic 1: sensory-aware route planning and navigation
 
-### Epic 1: sensory-friendly route planning and real-time navigation
+- A user selects a destination inside Melbourne CBD.
+- The system returns at least one walking route and evaluates it using open pedestrian data.
+- Every route displays LOW, MODERATE or HIGH using text and non-colour indicators.
+- When a route exceeds the user's threshold, the system warns the user and recommends a calmer alternative.
+- Public transport access points near candidate routes are included in the response boundary.
 
-- The user enters a destination within Melbourne CBD.
-- The system returns at least one walking route and uses open pedestrian data to calculate sensory load.
-- Every route displays a LOW, MODERATE, or HIGH label without relying on colour alone.
-- When a route exceeds the user's threshold, the system displays a warning and recommends a calmer alternative.
-- Public transport access points are shown near the route.
+## Epic 2: sensory environment monitoring
 
-### Epic 2: sensory environment monitoring
+- The system shows alerts for high-density pedestrian areas.
+- It presents nearby parks, libraries and other quiet-space candidates on demand.
+- It provides a transparent next-hour alert based on historical hourly patterns and recent conditions.
+- Every prediction identifies its time and confidence and is described as a possibility, not a certainty.
 
-- Display real-time alerts for high-density pedestrian areas.
-- Show nearby parks, libraries, and quieter public spaces on demand.
-- Use historical hourly trends to provide alerts for the next hour.
-- Predictions must state their basis, timestamp, and confidence and must not be presented as certain outcomes.
+## Locked MVP scope
 
-## Confirmed MVP boundaries
+The MVP must include:
 
-Required:
+- a public AWS HTTPS URL;
+- no registration, login, user account or database;
+- destination selection and candidate walking routes;
+- explainable scoring based on pedestrian data;
+- LOW, MODERATE and HIGH textual levels;
+- a user threshold, crowd warning and alternative route;
+- current crowd alerts and nearby quiet-space candidates;
+- keyboard support, visible focus, non-colour indicators and reduced-motion support.
 
-- A public AWS HTTPS URL.
-- No registration, login, user account, or account database.
-- Destination selection and candidate walking routes.
-- Explainable scoring based on pedestrian data.
-- Text-based LOW, MODERATE, and HIGH levels.
-- A user-defined threshold, congestion alerts, and alternative routes.
-- Pedestrian alerts and nearby quiet spaces.
-- Baseline accessibility support including keyboard use, visible focus, non-colour cues, and reduced motion.
+The following evidence is still required before live acceptance:
 
-Required before acceptance with live data:
+- Mapbox Directions and Geocoding adapters;
+- City of Melbourne sensor-location, past-hour and hourly-history adapters;
+- route-to-sensor geospatial matching;
+- a mentor-approved public-facility or open-space dataset;
+- Transport Victoria access-point data;
+- generated historical baselines and prediction-accuracy records;
+- CloudWatch alarms, a public deployment and a complete demo checklist.
 
-- Live Mapbox Directions and Geocoding adapters.
-- City of Melbourne sensor-location, recent-count, and hourly-history adapters.
-- A mentor-approved public-facilities or open-space dataset.
-- Transport Victoria stop data.
-- Historical baseline generation and prediction-accuracy evidence.
-- CloudWatch alarms, public deployment, and a complete demonstration checklist.
+The MVP intentionally excludes:
 
-Out of scope for this iteration:
+- login, profiles, saved routes or user history;
+- RDS, EC2 and operational microservices;
+- machine-learning models;
+- social features and full turn-by-turn navigation.
 
-- Login, profiles, favourites, or journey history.
-- RDS, EC2, or a microservice split.
-- Machine-learning models.
-- Social features or full turn-by-turn navigation.
+## Current implementation
 
-## Architecture foundation
+The architecture and default mock flow are complete and runnable locally. The frontend, API, scoring, threshold recommendation, source metadata, validation, structured errors, fallback executor and AWS foundation are implemented. Shared ports now isolate every external integration, allowing team members to add live providers without modifying the central route orchestration service.
 
-- `code/frontend/`: a React, TypeScript, and Vite single-page application with a low-stimulation visual system, route cards, alerts, quiet spaces, and a lazy Mapbox integration boundary.
-- `code/backend/`: a Lambda-style API separated into HTTP, route-service, scoring, prediction, and data-adapter layers.
-- `code/packages/contracts/`: shared request and response types that reduce frontend/backend contract drift.
-- `code/data/` and `code/scripts/`: entry points for historical baselines, fallback snapshots, and offline preprocessing.
-- `code/infra/`: AWS SAM and CloudFormation definitions for Lambda, API Gateway, private S3, CloudFront OAC, and `/api/*` forwarding.
-- `documents/project/requirements-traceability.md`: a requirement-by-requirement record of code locations, current status, and outstanding acceptance evidence.
+All current default provider results are explicitly marked `MOCK`. The repository is not yet a live or publicly deployed system.
 
-## Current state
+## Recommended implementation sequence
 
-The architecture foundation is complete and runs locally. Without credentials, the application demonstrates the main user flow using deterministic data. Automated tests cover scoring, threshold-based recommendations, and the prediction boundary. Every response is explicitly labelled `MOCK` so demonstration data is never presented as live data.
-
-## Recommended next steps
-
-1. Integrate Mapbox destination search and walking alternatives while retaining the mock fallback.
-2. Integrate City of Melbourne pedestrian counts and sensor locations with timestamps and failure fallback.
-3. Complete spatial sensor-to-route matching and calibrate LOW, MODERATE, and HIGH thresholds against real distributions.
-4. Confirm quiet-space and public-transport sources, then add their map layers and data attribution.
-5. Generate the historical baseline and add prediction-accuracy tests.
-6. Deploy to AWS staging and complete accessibility, mobile, failure-mode, and mentor-demonstration acceptance checks.
+1. Implement Mapbox destination search and walking alternatives behind `RouteProvider`.
+2. Implement City of Melbourne current pedestrian data behind `PedestrianProvider`.
+3. Implement geospatial route-to-sensor matching behind `SensorMatcher` and calibrate thresholds with real distributions.
+4. Approve and integrate quiet-space and public-transport sources behind their repository ports.
+5. Implement versioned snapshots and historical baselines, then validate prediction accuracy.
+6. Deploy to AWS staging and complete accessibility, mobile, failure-mode and mentor-demo acceptance.

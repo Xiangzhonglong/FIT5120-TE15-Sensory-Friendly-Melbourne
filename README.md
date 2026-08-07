@@ -1,29 +1,65 @@
-# Sensory-Friendly Melbourne
+# CalmPath Melbourne
 
-CalmPath Melbourne is a FIT5120 Onboarding Team project for the 2026 Semester 2 onboarding iteration.
+CalmPath Melbourne is a no-login, sensory-aware walking route prototype for adults travelling through Melbourne CBD. It compares walking alternatives using pedestrian-load signals, explains each score, warns when a route exceeds a user's crowd tolerance, and identifies nearby places that may provide a lower-stimulation pause.
 
-It is a no-login walking-route comparison prototype for sensory-sensitive adults travelling through Melbourne CBD. The project supports UN Sustainable Development Goal 11 and currently provides a runnable frontend and backend foundation, explainable pedestrian-load scoring, alerts, nearby quiet-space information, and an AWS deployment baseline.
+The project supports UN Sustainable Development Goal 11. It is currently an integration-ready foundation: the complete user flow runs with deterministic mock providers, while production Mapbox, City of Melbourne, quiet-space, transport and snapshot implementations remain explicit team handoffs.
 
-> The current routes and pedestrian counts are deterministic demonstration data. The API explicitly returns `mode: "MOCK"`. The system must not be described as real time until Mapbox and City of Melbourne data are integrated and the API returns `mode: "LIVE"`.
+> The current default composition returns `MOCK` data. Do not describe the application as live until each response reports the actual state of every source through `dataSources`.
 
 ## Repository structure
 
 ```text
 .
-├─ code/                         # Runnable application and engineering configuration
-│  ├─ frontend/                 # React, TypeScript and Vite
-│  ├─ backend/                  # Lambda-style API
-│  ├─ packages/contracts/       # Shared frontend/backend contracts
-│  ├─ data/                     # Baseline and fallback data entry points
-│  ├─ scripts/                  # Offline preprocessing scripts
-│  └─ infra/                    # AWS SAM and CloudFormation
-└─ documents/
-   └─ project/                  # Project scope, architecture and requirements traceability
+├── code/
+│   ├── frontend/                 # React, TypeScript and Vite single-page application
+│   ├── backend/                  # Lambda-compatible API and integration architecture
+│   │   └── src/
+│   │       ├── adapters/         # Mock providers and reusable fallback executor
+│   │       ├── ports/            # Interfaces for team-owned integrations
+│   │       ├── services/         # Route orchestration, scoring and prediction
+│   │       ├── application.ts    # Composition root
+│   │       └── http.ts           # Validation and HTTP boundary
+│   ├── packages/contracts/       # Shared browser/API contracts
+│   ├── data/                     # Versioned baseline and snapshot boundaries
+│   ├── scripts/                  # Offline preprocessing jobs
+│   └── infra/                    # AWS SAM and CloudFormation foundation
+└── documents/
+    ├── source/                   # Original PDF and DOCX requirement material
+    └── project/                  # Architecture, decisions, handoffs and traceability
 ```
 
-## Local development
+## Architecture at a glance
 
-Requires Node.js 24+ and pnpm 11+.
+```mermaid
+flowchart LR
+    Browser --> CloudFront
+    CloudFront -->|static files| S3
+    CloudFront -->|/api/*| APIGateway
+    APIGateway --> Lambda
+    Lambda --> RouteService
+    RouteService --> RouteProvider
+    RouteService --> PedestrianProvider
+    RouteService --> SensorMatcher
+    RouteService --> QuietSpaceRepository
+    RouteService --> TransportRepository
+```
+
+The backend follows a ports-and-adapters design. `RouteService` depends only on interfaces in `backend/src/ports`; it does not know Mapbox URLs, City of Melbourne payloads or snapshot storage details. The current composition supplies deterministic mock adapters. Team members can implement live or snapshot adapters without editing the orchestration service.
+
+The fallback executor supports the intended order:
+
+```text
+LIVE provider -> versioned SNAPSHOT provider -> deterministic MOCK provider
+```
+
+Every provider returns source name, mode, timestamp, confidence, staleness and an optional fallback reason. A response may therefore be `MIXED` when different boundaries use different source modes.
+
+## Prerequisites
+
+- Node.js 24 or later
+- pnpm 11.9.0 or a compatible pnpm 11 release
+
+## Run locally
 
 ```bash
 cd code
@@ -31,9 +67,21 @@ pnpm install
 pnpm dev
 ```
 
-Open `http://localhost:5173`. The frontend proxies `/api` requests to `http://localhost:3001`. Without a token, the application uses a placeholder map and demonstration data while preserving the main user flow.
+Open `http://localhost:5173`. Vite forwards `/api` requests to the local backend at `http://localhost:3001`.
 
-To enable the Mapbox renderer, copy `code/.env.example` to `code/frontend/.env.local` and provide a URL- and scope-restricted `VITE_MAPBOX_TOKEN`.
+No token is required for the default mock flow. To enable only the browser map renderer, copy `code/.env.example` to `code/frontend/.env.local` and add a URL- and scope-restricted `VITE_MAPBOX_TOKEN`. Never commit the resulting environment file.
+
+## API foundation
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/health` | Service health |
+| `POST` | `/api/routes` | Route comparison, scoring, alerts and nearby resources |
+| `GET` | `/api/crowd` | Current crowd boundary for diagnostics |
+| `GET` | `/api/quiet-spaces` | Quiet-space repository boundary |
+| `GET` | `/api/alerts` | Current and predicted alert boundary |
+
+`POST /api/routes` validates JSON content, payload size, coordinates, Melbourne CBD destination bounds, destination label and crowd threshold. Stable error codes and request IDs are returned to clients.
 
 ## Quality checks
 
@@ -42,16 +90,35 @@ cd code
 pnpm check
 ```
 
-This command runs type checks, automated tests, and production builds for the frontend and backend.
+This runs TypeScript checks, automated tests, and production builds for all workspaces. Run it before every pull request.
+
+## Team integration handoffs
+
+The foundation intentionally leaves these implementations to other team members:
+
+- Mapbox geocoding and walking alternatives implementing `RouteProvider`;
+- City of Melbourne current and historical pedestrian data implementing `PedestrianProvider`;
+- geospatial route-to-sensor matching implementing `SensorMatcher`;
+- mentor-approved facility/open-space data implementing `QuietSpaceRepository`;
+- Transport Victoria access data implementing `TransportRepository`;
+- versioned S3 fallback data implementing `SnapshotRepository`.
+
+Start with [the backend integration guide](code/backend/README.md) and [the project integration guide](documents/project/integration-guide.md). Do not import live provider code directly into `RouteService`; register implementations in `backend/src/application.ts` instead.
 
 ## Documentation
 
 - [Project overview](documents/project/project-overview.md)
 - [System architecture](documents/project/architecture.md)
-- [Requirements and Definition of Done traceability](documents/project/requirements-traceability.md)
-- [AWS deployment guide](code/infra/README.md)
+- [Integration ownership and handoffs](documents/project/integration-guide.md)
+- [Requirements traceability](documents/project/requirements-traceability.md)
+- [Architecture decisions](documents/project/decisions/README.md)
+- [Backend integration guide](code/backend/README.md)
+- [Shared contracts guide](code/packages/contracts/README.md)
+- [AWS deployment foundation](code/infra/README.md)
 - [Contribution and branch workflow](CONTRIBUTING.md)
 
-## Before pushing to GitHub
+## Security and repository hygiene
 
-Dependencies, build output, environment secrets, coverage output, and temporary files are excluded by `.gitignore`. Run `pnpm install` after the first clone to restore dependencies. Before committing, confirm that no real Mapbox token, AWS credential, or `.env` file is included.
+Dependencies, builds, environment files, coverage output and temporary files are excluded by `.gitignore`. Before pushing, confirm that the repository contains no Mapbox tokens, AWS credentials, `.env` files, `node_modules` or `dist` directories.
+
+Use browser-safe Mapbox tokens only in the frontend. Server tokens belong in the approved AWS secret mechanism. Application logs record request IDs, durations, source modes and error codes, but must not record tokens or precise user journey histories.

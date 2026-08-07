@@ -1,5 +1,5 @@
 import type { SensoryLevel } from "@sensory-melbourne/contracts";
-import type { PedestrianSensor } from "../data/mock-data.js";
+import type { PedestrianSensor } from "../domain.js";
 
 export function clamp01(value: number): number {
   return Math.max(0, Math.min(1, value));

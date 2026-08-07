@@ -1,21 +1,5 @@
-import type { Coordinates, QuietSpace } from "@sensory-melbourne/contracts";
-
-export type PedestrianSensor = {
-  id: string;
-  name: string;
-  location: Coordinates;
-  currentCount: number;
-  historicalP95: number;
-};
-
-export type CandidateRoute = {
-  id: string;
-  name: string;
-  durationMin: number;
-  distanceM: number;
-  sensorIds: string[];
-  coordinates: [number, number][];
-};
+import type { QuietSpace, TransportAccessPoint } from "@sensory-melbourne/contracts";
+import type { CandidateRoute, PedestrianSensor } from "../domain.js";
 
 export const sensors: PedestrianSensor[] = [
   {
@@ -47,39 +31,51 @@ export const candidateRoutes: CandidateRoute[] = [
     name: "Direct via Swanston Street",
     durationMin: 14,
     distanceM: 1080,
-    sensorIds: ["sensor-swanston", "sensor-lonsdale"],
-    coordinates: [
-      [144.9631, -37.8136],
-      [144.963, -37.8124],
-      [144.9626, -37.8102]
-    ]
+    geometry: {
+      type: "LineString",
+      coordinates: [
+        [144.9631, -37.8136],
+        [144.963, -37.8124],
+        [144.9626, -37.8102]
+      ]
+    }
   },
   {
     id: "route-calmer",
     name: "Calmer via Russell Street",
     durationMin: 18,
     distanceM: 1410,
-    sensorIds: ["sensor-russell"],
-    coordinates: [
-      [144.9631, -37.8136],
-      [144.9671, -37.8126],
-      [144.9672, -37.8108],
-      [144.9626, -37.8102]
-    ]
+    geometry: {
+      type: "LineString",
+      coordinates: [
+        [144.9631, -37.8136],
+        [144.9671, -37.8126],
+        [144.9672, -37.8108],
+        [144.9626, -37.8102]
+      ]
+    }
   },
   {
     id: "route-balanced",
     name: "Balanced via Lonsdale Street",
     durationMin: 16,
     distanceM: 1260,
-    sensorIds: ["sensor-lonsdale", "sensor-russell"],
-    coordinates: [
-      [144.9631, -37.8136],
-      [144.9656, -37.812],
-      [144.9626, -37.8102]
-    ]
+    geometry: {
+      type: "LineString",
+      coordinates: [
+        [144.9631, -37.8136],
+        [144.9656, -37.812],
+        [144.9626, -37.8102]
+      ]
+    }
   }
 ];
+
+export const routeSensorIds: Record<string, string[]> = {
+  "route-direct": ["sensor-swanston", "sensor-lonsdale"],
+  "route-calmer": ["sensor-russell"],
+  "route-balanced": ["sensor-lonsdale", "sensor-russell"]
+};
 
 export const quietSpaces: QuietSpace[] = [
   {
@@ -107,3 +103,7 @@ export const quietSpaces: QuietSpace[] = [
     sourceLabel: "Curated demo snapshot - validate before live use"
   }
 ];
+
+// Transport integration is intentionally empty until the team approves a
+// Transport Victoria source. The contract and repository port are ready.
+export const transportAccess: TransportAccessPoint[] = [];
