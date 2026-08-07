@@ -1,0 +1,135 @@
+location_id,sensor_name,sensor_description,status,location_type,direction_1_label,direction_2_label,latitude,longitude,installation_date,source_note
+3,Swa295_T,Melbourne Central,A,Outdoor,North,South,-37.81101524,144.96429485,2009-03-25,
+5,PriNW_T,Princes Bridge,A,Outdoor,North,South,-37.81874249,144.96787656,2009-03-26,Replace with: 00:6e:02:01:9e:54
+9,Col700_T,Southern Cross Station,A,Outdoor,East,West,-37.81982992,144.95102555,2009-03-23,
+11,WatCit_T,Docklands Waterfront City Building Side,A,Outdoor,East,West,-37.81566651,144.93974366,2009-01-20,Device has been replaced with new sensor on 22/03/2019
+12,NewQ_T,New Quay,A,Outdoor,East,West,-37.81457988,144.94292398,2009-01-21,
+14,SanBri_T,Sandridge Bridge,A,Outdoor,North,South,-37.82011242,144.96291897,2009-03-24,Sensor relocated to sensor ID 25 on 2/10/2019
+18,Col12_T,Collins Place (North),A,Outdoor,East,West,-37.81344862,144.97305353,2009-03-30,
+19,LtB210_T,Chinatown-Swanston St (North),A,Outdoor,East,West,-37.81237202,144.96550671,2013-09-02,"Pushbox Upgrade, 20/07/2023"
+20,LtB170_T,Chinatown-Lt Bourke St (South),A,Outdoor,East,West,-37.81172914,144.9682466,2013-09-06,"Pushbox Upgrade, 20/07/2023"
+27,Vic_T,QV Market-Peel St,A,Outdoor,East,West,-37.80606888,144.95644692,2013-08-16,
+35,SouthB_T,Southbank Promenade,A,Outdoor,East,West,-37.82018685,144.96508508,2016-04-11,Device replaced with two new sensors on 15-4-21
+41,Swa31,Flinders La-Swanston St (West),A,Outdoor,North,South,-37.81668634,144.96689733,2017-06-29,
+43,UM2_T,Monash Rd-Swanston St (West),A,Outdoor,North,South,-37.79844526,144.96411782,2015-04-15,
+44,UM3_T,Tin Alley-Swanston St (West),A,Outdoor,North,South,-37.79698741,144.96441306,2015-04-15,"Pushbox Upgrade, 30/06/2023"
+46,Pel147_T,Pelham St (South),A,Outdoor,East,West,-37.80240719,144.9615673,2017-07-10,
+47,Eli250_T,Melbourne Central-Elizabeth St (East),A,Outdoor,North,South,-37.81258467,144.9625775,2017-08-24,"Pushbox Upgrade, 25/07/2023. Move to 250 Elizabeth Street from adjacent St. Francis Church at 266 Elizabeth."
+48,QVMQ_T,QVM-Queen St (East),A,Outdoor,East,West,-37.80631581,144.95866697,2017-10-02,"Pushbox Upgrade, 03/07/2023"
+50,Lyg309_T,Faraday St-Lygon St (West),A,Outdoor,North,South,-37.79808192,144.96721013,2017-11-30,"Pushbox Upgrade, 25/07/2023"
+51,Fra118_T,QVM-Franklin St (North),A,Outdoor,East,West,-37.80841815,144.95906316,2017-11-30,"Pushbox Upgrade, 20/07/2023"
+52,Eli263_T,Elizabeth St-Lonsdale St (South),A,Outdoor,East,West,-37.81252157,144.9619401,2017-07-31,"Pushbox Upgrade, 25/07/2023"
+53,Col254_T,Collins Street (North),A,Outdoor,East,West,-37.81564191,144.965499,2015-09-23,
+54,Swa607_T,Lincoln-Swanston (West),A,Outdoor,North,South,-37.804024,144.96308399,2018-06-26,
+56,Lon364_T,Lonsdale St - Elizabeth St (North),A,Outdoor,East,West,-37.81234775,144.96153311,2018-07-25,Sensor device has been replaced
+68,FLDegN_T,Flinders Ln -Degraves St (North),A,Outdoor,East,West,-37.8168479,144.96559789,2020-06-03,
+69,FLDegC_T,Flinders Ln -Degraves St (Crossing),A,Outdoor,North,South,-37.81687226,144.96559144,2020-06-03,
+72,ACMI_T,Flinders St- ACMI,A,Outdoor,East,West,-37.81726338,144.96872809,2020-11-30,
+81,BoCoF_T,Boyd Commuinty - Front door,A,Indoor,,,-37.82579138,144.96084343,2021-03-30,
+82,Eli512_T,512 Elizabeth Street,A,Indoor,,,-37.80667227,144.96005554,2021-11-05,
+85,488Mac_T,Macaulay Rd (North),A,Outdoor,East,West,-37.79432415,144.92973378,2021-12-21,
+86,574Qub_T,Queensberry St - Errol St (South),A,Outdoor,East,West,-37.80309992,144.94908064,2021-12-21,
+89,CityLi_T,City Library,A,Indoor,,,-37.81685964,144.96586575,2013-12-11,
+90,BoCoL_T,Boyd Community Hub- Library,A,Indoor,,,-37.82556207,144.96115421,2015-08-11,
+93,EastLib_T,East Melbourne Library,A,Indoor,,,-37.81498411,144.98638807,2013-02-02,
+96,FitGarVisIInt_T,Fitzroy Garden Visitor Centre Internal,A,Indoor,,,-37.81499687,144.97925064,2015-03-02,"Pushbox Upgrade, 30/06/2023"
+105,KatLib2_T,Kathleen Syme Library Lib,A,Indoor,,,-37.79861828,144.9652825,2018-02-02,
+108,261Will_T,William St - Little Lonsdale St (West),A,Outdoor,North,South,-37.81295822,144.95678789,2022-10-08,Added lines for 7 Eleven Store - 2025-05-07
+116,FitCafVis_T,Fitzroy Garden Visitor Centre Cafe Verandah,A,Indoor,,,-37.81493732,144.97932442,2015-03-02,"Pushbox Upgrade, 30/06/2023"
+117,Fli114F_T,114 Flinders Street Car Park Footpath,A,Outdoor,East,West,-37.81629332,144.97090877,2022-12-06,
+123,BirBridge_T,Birrarung Marr East - Batman Ave Bridge Entry,A,Outdoor,East,West,-37.81753741,144.97329734,2023-06-02,<Null>
+132,King335_T,I-Hub Corner of King Street and Latrobe Street (317-335 King),A,Outdoor,North,South,-37.81267639,144.95386444,2023-09-25,
+133,Spen229_T,I-Hub Southern Cross Station - Lonsdale Street Entrance - South,A,Outdoor,North,South,-37.81531435,144.95227769,2023-09-25,
+136,BirFed1120_T,"COM Pole 1120 - Towards the City, Near Federation Square Bridge",A,Outdoor,East,West,-37.8184141,144.97357915,2023-11-03,
+139,Signal1647_T,COM Pole 1647 - Sandridge Bridge Signal Box,A,Outdoor,East,West,-37.81959923,144.9632832,2023-11-20,
+140,Boyd2837_T,COM Pole 2837 - Boyd Park,A,Outdoor,North,South,-37.82590962,144.96185972,2023-11-02,
+142,Hammer1584_T,COM Pole 1584 - Hammer Hall Entrance,A,Outdoor,East,West,-37.81970749,144.96795734,2023-11-03,
+146,narrLibL1L3_T,narrm ngarrgu Library - Level 1 - Lift 3,A,Indoor,,,-37.80766922,144.95840594,2023-10-23,
+150,narrLibL1MB_T,narrm ngarrgu Library - Level 1 Main Stairs B,A,Indoor,,,-37.80791198,144.95820087,2023-10-23,
+155,narrLibL#C2_T,narrm ngarrgu Library - Level 3 Children's Library Door 2,A,Indoor,,,-37.80783201,144.95845043,2023-10-23,
+160,Swa420_T,"City Baths, 420 Swanston Street - Main Entry",A,Indoor,,,-37.80699526,144.96306214,2024-06-04,
+161,BirArt1109_T,Birrarung Marr - COM - Pole 1109,A,Outdoor,East,West,-37.81851276,144.97131336,2024-06-04,
+165,Spen475_T,475 Spencer Street,A,Outdoor,North,South,-37.80953359,144.94939004,2024-08-14,
+181,Eli368_T,368 Elizabeth Street,A,Outdoor,North,South,-37.81009465,144.96143149,2025-03-26,Moved from 380 Elizabeth Street
+188,RMIT51_T,RMIT Building 51 - 80-92 Victoria Street,A,Outdoor,North,South,-37.80663222,144.96456557,2025-10-17,
+1,Bou292_T,Bourke Street Mall (North),A,Outdoor,East,West,-37.81349441,144.96515323,2009-03-24,
+4,Swa123_T,Town Hall (West),A,Outdoor,North,South,-37.81487988,144.9660878,2009-03-23,
+6,FliS_T,Flinders Underpass - Myki Barriers,A,Outdoor,North,South,-37.81907439,144.96557866,2009-03-25,Upgraded on 8/09/21
+10,BouHbr_T,Victoria Point,A,Outdoor,East,West,-37.81876474,144.94710545,2009-04-23,
+17,Col15_T,Collins Place (South),A,Outdoor,East,West,-37.81362543,144.97323591,2009-03-30,Device upgraded in 26/02/2020
+24,Col620_T,Spencer St-Collins St (North),A,Outdoor,East,West,-37.81887963,144.95449198,2013-09-02,
+31,Lyg161_T,Lygon St (West),A,Outdoor,North,South,-37.80169681,144.96658911,2013-10-10,"Pushbox Upgrade, 25/07/2023"
+36,Que85_T,Queen St (West),A,Outdoor,North,South,-37.81652527,144.96121062,2015-01-20,"Pushbox Upgrade, 03/08/2023"
+39,AlfPl_T,Alfred Place,A,Outdoor,North,South,-37.81379749,144.96995745,2019-12-04,In 4/12/2019 sensor upgraded
+45,Swa148_T,Little Collins St-Swanston St (East),A,Outdoor,North,South,-37.81414075,144.96609379,2017-06-29,"Pushbox Upgrade, 03/08/2023"
+49,Eli501_T,QVM-Therry St (South),A,Outdoor,East,West,-37.80730068,144.95956055,2017-11-29,"Pushbox Upgrade, 20/07/2023"
+58,Bou688_T,Bourke St - Spencer St (North),A,Outdoor,East,West,-37.81686075,144.95358075,2018-09-27,
+59,RMIT_T,Building 80 RMIT,A,Outdoor,North,South,-37.80825648,144.96304859,2019-02-13,
+61,RMIT14_T,RMIT Building 14,A,Outdoor,North,South,-37.80767455,144.96309114,2019-06-28,
+62,Lat224_T,La Trobe St (North),A,Outdoor,East,West,-37.80996494,144.96216521,2019-09-25,
+66,QVN_T,"QV2 Apartments, 300 Swanston Street",A,Outdoor,North,South,-37.81057846,144.96444294,2020-04-06,
+75,SprFli_T,Spring St- Flinders st (West),A,Outdoor,North,South,-37.81515276,144.97467661,2020-12-18,
+77,HarEsP_T,Harbour Esplanade (West) - Pedestrian path,A,Outdoor,North,South,-37.81441438,144.94433026,2021-03-25,Replaced - water damaged
+79,FliSS_T,Flinders St (South),A,Outdoor,East,West,-37.81794046,144.96616678,2021-09-10,
+80,BoCoR_T,Boyd Commuinty - Rear door,A,Indoor,,,-37.8254567,144.96131206,2021-03-30,
+83,Eli510_T,510 Elizabeth Street,A,Indoor,,,-37.8067319,144.96005113,2021-11-05,
+84,ElFi_T,Elizabeth St - Flinders St (East) - New footpath,A,Outdoor,North,South,-37.81798049,144.96503383,2021-12-03,Sensing Data started on 2019-02-14
+87,Errol23_T,Errol St (West),A,Outdoor,North,South,-37.80454949,144.94921863,2022-05-20,
+91,DocLib1_T,Library at The Dock-North side,A,Indoor,,,-37.8200188,144.94029861,2015-06-05,
+94,FitConVis_T,Fitzroy Garden- The Conservatory,A,Indoor,,,-37.81424531,144.97851861,2015-03-02,
+95,FitGarExtVisExt_T,Fitzroy Garden Visitor Centre External,A,Indoor,,,-37.81488315,144.97926569,2015-03-02,"Pushbox Upgrade, 30/06/2023"
+102,NtMelLib_T,North Melbourne Library,A,Indoor,,,-37.80340543,144.94977011,2018-02-02,
+103,KenTown_T,Kensington Town Hall,A,Indoor,,,-37.7893527,144.9286055,2018-02-02,Device Replace
+107,280Will_T,Royal Mint 280 William St,A,Outdoor,North,South,-37.81246271,144.95690188,2022-10-08,
+109,LatWill_T,La Trobe St- William St (South),A,Outdoor,East,West,-37.81193681,144.95621105,2022-10-08,
+124,BirBridge_T,Birrarung Marr East - Batman Ave Bridge Entry,A,Outdoor,North,South,-37.81757416,144.97329934,2023-06-02,
+135,Spen161_T,I-Hub Southern Cross Station - Bourke Street Entrance - South,A,Outdoor,North,South,-37.8172861,144.95319102,2023-09-25,
+137,BouHbr2353_T,"COM Pole 2353 - Towards the city, NAB Building",A,Outdoor,East,West,-37.81894815,144.94612292,2023-11-03,
+138,EntPark1671_T,"COM Pole 1671 - Enterprize Park, Queens Bridge",A,Outdoor,East,West,-37.81996544,144.95981454,2023-11-20,
+141,474Fl_T,Awning of Nationwide Parking 474 Flinders Street,A,Outdoor,East,West,-37.81997273,144.95834911,2023-11-10,
+148,narrLibMRL2_T,narrm ngarrgu Library - Level 1 - Meeting Room Lift 2,A,Indoor,,,-37.80772224,144.95823515,2023-10-23,
+149,narrLibL1MA_T,narrm ngarrgu Library - Level 1 Main Stairs A,A,Indoor,,,-37.80781158,144.9582219,2023-10-23,
+151,narrLibL2CA_T,narrm ngarrgu Library - Level 2 - Collections Stairs A,A,Indoor,,,-37.80771581,144.9586238,2023-10-23,
+153,narrLibL2S2_T,narrm ngarrgu Library - Level 2 - Study Area Lifts 2,A,Indoor,,,-37.80780367,144.95829765,2023-10-23,
+154,narrLibL3C1_T,narrm ngarrgu Library - Level 3 Children's Library Door 1,A,Indoor,,,-37.80778437,144.95862772,2023-10-23,
+158,Eli514_T,514 Elizebeth Street,A,Indoor,,,-37.80657467,144.96007044,2024-01-29,
+164,Lat526_T,I-Hub 526 La Trobe Street (Footpath),A,Outdoor,East,West,-37.813005,144.95160411,2024-08-14,
+180,Mac330_T,"Pumping Station No.2, 330 Macaulay Road",A,Outdoor,East,West,-37.79497059,144.93530329,2025-03-11,
+185,Eli197_T,197 Elizabeth Street,A,Outdoor,North,South,-37.81374643,144.96276183,2025-06-28,
+209,FliS_T,Flinders Underpass - Walkway,A,Outdoor,North,South,-37.81909037,144.96549709,2009-03-25,Upgraded on 8/09/21
+2,Bou283_T,Bourke Street Mall (South),A,Outdoor,East,West,-37.81380668,144.96516718,2009-03-30,
+8,WebBN_T,Webb Bridge,A,Outdoor,North,South,-37.82293543,144.9471751,2009-03-24,
+21,Bourke155_T,155-161 Russell Street,A,Outdoor,North,South,-37.81267313,144.96788288,2013-09-02,
+23,Col623_T,Spencer St-Collins St (South),A,Outdoor,East,West,-37.81909256,144.95452748,2013-09-02,"Pushbox Upgrade, 25/07/2023"
+25,MCEC_T,Melbourne Convention Exhibition Centre,A,Outdoor,East,West,-37.82401776,144.95604426,2013-08-28,
+29,AG_T,St Kilda Rd-Alexandra Gardens,A,Outdoor,North,South,-37.8199817,144.96872865,2013-10-11,sensor upgraded from laser to 3D on 19/12/2019
+30,Lon189_T,Lonsdale St (South),A,Outdoor,East,West,-37.8112185,144.96656806,2013-10-14,"Pushbox Upgrade, 20/07/2023"
+37,Lyg260_T,Lygon St (East),A,Outdoor,North,South,-37.80107122,144.96704554,2015-02-11,"Pushbox Upgrade, 30/06/2023. Move from 174 to 260 Lygon Street (12/08/2024)"
+40,Spr201_T,Lonsdale St-Spring St (West),A,Outdoor,North,South,-37.80999341,144.97227587,2015-01-19,"Pushbox Upgrade, 03/08/2023"
+42,UM1_T,Grattan St-Swanston St (West),A,Outdoor,North,South,-37.80008566,144.96386412,,Sensor Upgraded
+63,Bou231_T,231 Bourke St,A,Outdoor,East,West,-37.81333081,144.96675571,2020-01-07,
+67,FLDegS_T,Flinders Ln -Degraves St (South),A,Outdoor,East,West,-37.81688755,144.96562569,2020-06-03,
+70,Errol20_T,Errol Street (East),A,Outdoor,North,South,-37.80456984,144.94946228,2020-10-12,
+71,WestWP_T,Westwood Place,A,Outdoor,North,South,-37.81235775,144.97136962,2020-10-16,
+76,KenMac_T,Macaulay Rd- Bellair St,A,Outdoor,East,West,-37.79453803,144.93036194,2021-02-20,
+92,DocLib2_T,Library at The Dock-South side,A,Indoor,,,-37.82016286,144.94039584,2015-06-05,
+99,TownVis_T,Town Hall Visitor Centre,A,Indoor,,,-37.81462143,144.96623279,2020-02-02,"Pushbox Upgrade, 03/08/2023"
+104,KatLib1_T,Kathleen Syme Library Main,A,Indoor,,,-37.79863553,144.96548206,2018-02-02,
+106,KatLib3_T,Kathleen Syme Library Cafe,A,Indoor,,,-37.79859459,144.96510921,2018-02-02,
+118,Fli114C_T,114 Flinders Street Car Park Crossing,A,Outdoor,North,South,-37.81632783,144.97090512,2022-12-06,
+130,Bou892T,I-Hub 892 Bourke Street,A,Outdoor,East,West,-37.8204637,144.94126826,2023-09-25,
+131,King2_T,I-Hub Corner of King Street and Flinders Street (2-6 King),A,Outdoor,North,South,-37.82009057,144.95758725,2023-09-25,
+134,Spen201_T,I-Hub Southern Cross Station - Bourke Street Entrance - North,A,Outdoor,North,South,-37.81694221,144.95303935,2023-09-25,
+143,Spencer_T,"Mounted on Toilet - Spencer Street, Batman Park",A,Outdoor,North,South,-37.821728,144.95557015,2024-04-10,
+144,narrLibL1L1_T,narrm ngarrgu Library - Level 1 - Lift 1,A,Indoor,,,-37.80760657,144.95862847,2023-10-23,
+145,narrLibL1L2_T,narrm ngarrgu Library - Level 1 - Lift 2,A,Indoor,,,-37.80763871,144.95850722,2023-10-23,
+147,narrLibMRL1_T,narrm ngarrgu Library - Level 1 - Meeting Room Lift 1,A,Indoor,,,-37.80769805,144.95832131,2023-10-23,
+152,narrLibL2S1_T,narrm ngarrgu Library - Level 2 - Study Area Lifts 1,A,Indoor,,,-37.80776728,144.95843977,2023-10-23,
+159,Eli516_T,516 Elizeberth Street,A,Indoor,,,-37.80651646,144.96007934,2024-01-29,
+162,Eli489_T,iHub 489 Elizabeth Street,A,Outdoor,North,South,-37.80740397,144.95987909,2024-07-01,
+166,Spen484_T,484 Spencer Street,A,Outdoor,North,South,-37.80896733,144.94931703,2024-09-25,Former sensor 227 Bourke Street – City Lab
+167,Lat526_T,I-Hub 526 La Trobe Street (Crossing),A,Outdoor,North,South,-37.81304149,144.95155955,2024-08-14,
+179,Pow61_T,61-67 Power Street Southbank,A,Outdoor,North,South,-37.82392385,144.96299677,2024-12-19,
+182,King163_T,163 King Street,A,Outdoor,North,South,-37.81627451,144.95550503,2025-04-11,
+184,Eli124_T,124 Elizabeth Street,A,Outdoor,North,South,-37.81512416,144.96371988,2025-06-28,
+187,Swa330_T,RMIT Building 22 - 330 Swanston Street,A,Outdoor,East,West,-37.80942561,144.96395473,2025-10-18,
