@@ -98,6 +98,12 @@ h1 em { color: var(--forest); font-weight: inherit; }
 .field-icon.destination-icon { border-radius: 50% 50% 50% 0; transform: translateY(-63%) rotate(-45deg); }
 .field-icon.destination-icon::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--forest); }
 .field-note { display: block; margin: 7px 2px 0; color: #7a8782; font-size: .67rem; line-height: 1.45; }
+.location-field-actions { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.location-field-actions .field-note { flex: 1; }
+.field-note.selected-location { color: var(--forest); font-weight: 720; }
+.location-button { flex: 0 0 auto; margin-top: 6px; padding: 5px 8px; color: var(--forest); border: 1px solid #b9ccc4; border-radius: 7px; background: #f8fbf8; cursor: pointer; font-size: .62rem; font-weight: 790; }
+.location-button:hover { background: #edf5f0; }
+.location-button:disabled { opacity: .58; cursor: wait; }
 .preference-block { margin-top: 26px; padding: 19px; border: 1px solid #d5ded8; border-radius: 14px; background: #f0f5f1; }
 .range-label { margin-bottom: 13px; display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; }
 .range-label > label { margin: 0; }

@@ -4,11 +4,17 @@ import { SearchPanel } from "./SearchPanel";
 
 function renderPanel(overrides: Partial<Parameters<typeof SearchPanel>[0]> = {}) {
   const props = {
+    origin: "Melbourne Town Hall",
     destination: "Melbourne Central",
     threshold: 0.6,
     busy: false,
+    locating: false,
+    originIsCurrentLocation: false,
+    addressSearchAvailable: true,
+    onOriginChange: vi.fn(),
     onDestinationChange: vi.fn(),
     onThresholdChange: vi.fn(),
+    onUseCurrentLocation: vi.fn(),
     onSubmit: vi.fn(),
     ...overrides
   };
@@ -17,18 +23,30 @@ function renderPanel(overrides: Partial<Parameters<typeof SearchPanel>[0]> = {})
 }
 
 describe("SearchPanel", () => {
-  it("reports destination and crowd-tolerance changes", () => {
+  it("reports origin, destination and crowd-tolerance changes", () => {
     const props = renderPanel();
 
+    fireEvent.change(screen.getByLabelText(/^starting point$/i), {
+      target: { value: "100 Collins Street, Melbourne" }
+    });
     fireEvent.change(screen.getByLabelText(/destination in melbourne cbd/i), {
-      target: { value: "Flinders Street Station" }
+      target: { value: "Federation Square" }
     });
     fireEvent.change(screen.getByRole("slider", { name: /crowd tolerance/i }), {
       target: { value: "0.4" }
     });
 
-    expect(props.onDestinationChange).toHaveBeenCalledWith("Flinders Street Station");
+    expect(props.onOriginChange).toHaveBeenCalledWith("100 Collins Street, Melbourne");
+    expect(props.onDestinationChange).toHaveBeenCalledWith("Federation Square");
     expect(props.onThresholdChange).toHaveBeenCalledWith(0.4);
+  });
+
+  it("requests the browser's current location", () => {
+    const props = renderPanel();
+
+    fireEvent.click(screen.getByRole("button", { name: /use my location/i }));
+
+    expect(props.onUseCurrentLocation).toHaveBeenCalledOnce();
   });
 
   it("submits the route-planning form", () => {
@@ -43,9 +61,16 @@ describe("SearchPanel", () => {
     renderPanel({ busy: true });
 
     expect(screen.getByRole("button", { name: /comparing routes/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /use my location/i })).toBeDisabled();
     expect(screen.getByRole("slider", { name: /crowd tolerance/i })).toHaveAttribute(
       "aria-valuetext",
       "Balanced, 60 percent"
     );
+  });
+
+  it("explains when custom address search is unavailable", () => {
+    renderPanel({ addressSearchAvailable: false });
+
+    expect(screen.getByText(/Custom address search is unavailable/i)).toBeInTheDocument();
   });
 });

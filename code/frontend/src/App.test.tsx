@@ -4,13 +4,17 @@ import { routeSearchResponse } from "./test/fixtures";
 import { App } from "./App";
 
 const { searchRoutesMock } = vi.hoisted(() => ({ searchRoutesMock: vi.fn() }));
+const { geocodeLocationMock } = vi.hoisted(() => ({ geocodeLocationMock: vi.fn() }));
 
 vi.mock("./services/api", () => ({ searchRoutes: searchRoutesMock }));
+vi.mock("./services/geocoding", () => ({ geocodeLocation: geocodeLocationMock }));
 
 describe("App", () => {
   beforeEach(() => {
     searchRoutesMock.mockReset();
     searchRoutesMock.mockResolvedValue(routeSearchResponse);
+    geocodeLocationMock.mockReset();
+    Object.defineProperty(navigator, "geolocation", { configurable: true, value: undefined });
   });
 
   it("loads and displays the complete no-login route-planning response", async () => {
@@ -60,6 +64,62 @@ describe("App", () => {
       destination: { lat: -37.8183, lng: 144.9671 },
       destinationLabel: "Flinders Street Station",
       preferences: { crowdThreshold: 0.4 }
+    });
+  });
+
+  it("geocodes custom origin and destination text before searching", async () => {
+    geocodeLocationMock.mockImplementation(async (query: string) => query.startsWith("100 Collins")
+      ? { lat: -37.8141, lng: 144.9702 }
+      : { lat: -37.8177, lng: 144.9668 });
+    render(<App />);
+    await screen.findByRole("heading", { name: "Calmer via Russell Street", level: 3 });
+
+    fireEvent.change(screen.getByLabelText(/^starting point$/i), {
+      target: { value: "100 Collins Street, Melbourne" }
+    });
+    fireEvent.change(screen.getByLabelText(/destination in melbourne cbd/i), {
+      target: { value: "200 Collins Street, Melbourne" }
+    });
+    fireEvent.click(screen.getByRole("button", { name: /compare sensory-aware routes/i }));
+
+    await waitFor(() => expect(searchRoutesMock).toHaveBeenCalledTimes(2));
+    expect(geocodeLocationMock).toHaveBeenNthCalledWith(1, "100 Collins Street, Melbourne", {
+      accessToken: undefined,
+      restrictToCbd: false
+    });
+    expect(geocodeLocationMock).toHaveBeenNthCalledWith(2, "200 Collins Street, Melbourne", {
+      accessToken: undefined,
+      restrictToCbd: true
+    });
+    expect(searchRoutesMock).toHaveBeenLastCalledWith({
+      origin: { lat: -37.8141, lng: 144.9702 },
+      destination: { lat: -37.8177, lng: 144.9668 },
+      destinationLabel: "200 Collins Street, Melbourne",
+      preferences: { crowdThreshold: 0.6 }
+    });
+  });
+
+  it("uses browser coordinates as the route origin", async () => {
+    const getCurrentPosition = vi.fn((success: PositionCallback) => success({
+      coords: { latitude: -37.811, longitude: 144.958 }
+    } as GeolocationPosition));
+    Object.defineProperty(navigator, "geolocation", {
+      configurable: true,
+      value: { getCurrentPosition }
+    });
+    render(<App />);
+    await screen.findByRole("heading", { name: "Calmer via Russell Street", level: 3 });
+
+    fireEvent.click(screen.getByRole("button", { name: /use my location/i }));
+    expect(screen.getByLabelText(/^starting point$/i)).toHaveValue("Current location");
+    fireEvent.click(screen.getByRole("button", { name: /compare sensory-aware routes/i }));
+
+    await waitFor(() => expect(searchRoutesMock).toHaveBeenCalledTimes(2));
+    expect(searchRoutesMock).toHaveBeenLastCalledWith({
+      origin: { lat: -37.811, lng: 144.958 },
+      destination: { lat: -37.8102, lng: 144.9628 },
+      destinationLabel: "Melbourne Central",
+      preferences: { crowdThreshold: 0.6 }
     });
   });
 
