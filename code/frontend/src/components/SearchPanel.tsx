@@ -1,11 +1,18 @@
 import type { FormEvent } from "react";
+import { LOCATION_SUGGESTIONS } from "../services/locations";
 
 type Props = {
+  origin: string;
   destination: string;
   threshold: number;
   busy: boolean;
+  locating: boolean;
+  originIsCurrentLocation: boolean;
+  addressSearchAvailable: boolean;
+  onOriginChange: (value: string) => void;
   onDestinationChange: (value: string) => void;
   onThresholdChange: (value: number) => void;
+  onUseCurrentLocation: () => void;
   onSubmit: () => void;
 };
 
@@ -16,11 +23,17 @@ function toleranceLabel(threshold: number): string {
 }
 
 export function SearchPanel({
+  origin,
   destination,
   threshold,
   busy,
+  locating,
+  originIsCurrentLocation,
+  addressSearchAvailable,
+  onOriginChange,
   onDestinationChange,
   onThresholdChange,
+  onUseCurrentLocation,
   onSubmit
 }: Props) {
   function submit(event: FormEvent) {
@@ -39,23 +52,57 @@ export function SearchPanel({
       <label htmlFor="origin">Starting point</label>
       <div className="input-with-icon">
         <span className="field-icon start-icon" aria-hidden="true" />
-        <input id="origin" value="Melbourne Town Hall" readOnly aria-describedby="origin-note" />
+        <input
+          id="origin"
+          list="origin-suggestions"
+          value={origin}
+          maxLength={120}
+          autoComplete="street-address"
+          aria-describedby="origin-note"
+          onChange={(event) => onOriginChange(event.target.value)}
+        />
       </div>
-      <span className="field-note" id="origin-note">Demo origin · the API keeps the origin interface ready for live location.</span>
+      <div className="location-field-actions">
+        <span className={`field-note${originIsCurrentLocation ? " selected-location" : ""}`} id="origin-note">
+          {originIsCurrentLocation
+            ? "Current location selected for this request."
+            : "Enter an Australian address, choose a suggestion, or use your current location."}
+        </span>
+        <button
+          className="location-button"
+          type="button"
+          disabled={busy || locating}
+          onClick={onUseCurrentLocation}
+        >
+          {locating ? "Locating…" : "Use my location"}
+        </button>
+      </div>
 
       <label htmlFor="destination">Destination in Melbourne CBD</label>
       <div className="input-with-icon">
         <span className="field-icon destination-icon" aria-hidden="true" />
-        <select
+        <input
           id="destination"
+          list="destination-suggestions"
           value={destination}
+          maxLength={120}
+          autoComplete="off"
+          aria-describedby="destination-note"
           onChange={(event) => onDestinationChange(event.target.value)}
-        >
-          <option>Melbourne Central</option>
-          <option>State Library Victoria</option>
-          <option>Flinders Street Station</option>
-        </select>
+        />
       </div>
+      <span className="field-note" id="destination-note">
+        {addressSearchAvailable
+          ? "Enter a CBD address or choose a suggestion. Address search runs only when you compare routes."
+          : "Choose a suggested CBD location. Custom address search is unavailable in this environment."}
+      </span>
+
+      <datalist id="origin-suggestions">
+        {LOCATION_SUGGESTIONS.map((location) => <option key={location.label} value={location.label} />)}
+      </datalist>
+      <datalist id="destination-suggestions">
+        {LOCATION_SUGGESTIONS.map((location) => <option key={location.label} value={location.label} />)}
+      </datalist>
 
       <div className="preference-block">
         <div className="range-label">
@@ -76,11 +123,15 @@ export function SearchPanel({
         <p><span aria-hidden="true">◇</span> We will warn you when a route rises above this level.</p>
       </div>
 
-      <button className="primary-button" type="submit" disabled={busy}>
+      <button
+        className="primary-button"
+        type="submit"
+        disabled={busy || locating || origin.trim().length === 0 || destination.trim().length === 0}
+      >
         <span>{busy ? "Comparing routes…" : "Compare sensory-aware routes"}</span>
         <span className="button-arrow" aria-hidden="true">→</span>
       </button>
-      <p className="privacy-line"><span aria-hidden="true">◌</span> No account. No journey history saved.</p>
+      <p className="privacy-line"><span aria-hidden="true">◌</span> No account. Locations are used for this request and are not saved by CalmPath.</p>
     </form>
   );
 }

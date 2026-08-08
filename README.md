@@ -31,6 +31,7 @@ The `/api/routes` flow supports live Mapbox walking routes and the official City
 The current project focuses on:
 
 - comparing walking route alternatives;
+- entering flexible origins and Melbourne CBD destinations, with optional browser location;
 - calculating explainable pedestrian crowd scores;
 - allowing users to select a crowd-tolerance preference;
 - identifying nearby libraries, parks and public spaces that may offer a lower-stimulation pause;
@@ -84,6 +85,7 @@ The backend produces current crowd alerts only. It does not generate next-hour p
 ```mermaid
 flowchart TD
     Browser["Public web browser"] --> Vercel["Vercel HTTPS and CDN"]
+    Browser --> MapboxBrowser["Mapbox map and temporary address search"]
     Vercel --> Frontend["React and Vite frontend"]
     Vercel --> Functions["Vercel Functions under /api"]
     Functions --> Backend["Backend services and providers"]
@@ -92,6 +94,8 @@ flowchart TD
 ```
 
 Vercel hosts the frontend and API in one project. A separate API Gateway is not required.
+
+The browser uses a URL-restricted public Mapbox token for interactive map rendering and temporary address lookup. Route directions continue to use the separate server-only token through the backend. CalmPath does not persist address-search results or browser-location coordinates.
 
 The backend uses ports and adapters. Business services depend on interfaces rather than directly depending on Vercel, Neon, Mapbox or City of Melbourne response formats.
 
@@ -161,6 +165,8 @@ The Vite development server forwards `/api` requests to the local backend at `ht
 
 The default local route flow uses packaged snapshots and deterministic route fallback, so it does not require external credentials.
 
+The suggested CBD locations also work without browser credentials. Custom address search and the interactive map use the URL-restricted `VITE_MAPBOX_TOKEN`. Current location is requested only after the user selects the location button and is not saved by CalmPath.
+
 ## Environment variables
 
 Copy variable names from `code/.env.example`. Never commit real values.
@@ -171,7 +177,7 @@ Important variables include:
 | --- | --- | --- |
 | `DATABASE_URL` | Server only | Pooled Neon connection string for the read-only application role |
 | `VITE_API_BASE_URL` | Browser | API base path; normally `/api` |
-| `VITE_MAPBOX_TOKEN` | Browser | Optional URL- and scope-restricted browser map token |
+| `VITE_MAPBOX_TOKEN` | Browser | Optional URL- and scope-restricted token for the map and temporary address search |
 | `MAPBOX_SERVER_TOKEN` | Server only | Enables live Mapbox walking-route alternatives |
 | `MELBOURNE_OPEN_DATA_BASE_URL` | Server only | Approved City of Melbourne open-data base URL |
 | `LIVE_DATA_ENABLED` | Server only | Set to `true` to query current City pedestrian counts |
@@ -244,7 +250,6 @@ The remaining business integrations belong to the relevant backend and data owne
 - matching candidate routes to relevant pedestrian sensors;
 - use of historical P95 baseline values;
 - Neon repositories for the relational datasets required by route scoring;
-- removal of prediction functionality that is outside the approved scope;
 - truthful fallback behaviour when a live source is unavailable.
 
 Infrastructure deployment does not need to be redesigned when these providers are completed. The updated backend can be tested in Preview and then redeployed to the same Vercel Production project.

@@ -4,7 +4,8 @@ import type {
   RouteOption,
   RouteSearchRequest,
   RouteSearchResponse,
-  SensoryAlert
+  SensoryAlert,
+  SourceMode
 } from "@sensory-melbourne/contracts";
 import type { Logger } from "../ports/logger.js";
 import type { PedestrianProvider } from "../ports/pedestrian-provider.js";
@@ -35,6 +36,17 @@ function oldestTimestamp(statuses: DataSourceStatus[]): string {
     .map((status) => Date.parse(status.timestamp))
     .filter(Number.isFinite);
   return new Date(Math.min(...timestamps)).toISOString();
+}
+
+function crowdAlertMessage(mode: SourceMode, threshold: number): string {
+  const tolerance = `${Math.round(threshold * 100)}%`;
+  if (mode === "LIVE") {
+    return `Current crowd level is above your ${tolerance} tolerance. View a calmer route.`;
+  }
+  if (mode === "SNAPSHOT") {
+    return `Historical crowd estimate is above your ${tolerance} tolerance. View a calmer route.`;
+  }
+  return `Demonstration crowd estimate is above your ${tolerance} tolerance. View a calmer route.`;
 }
 
 export class RouteService {
@@ -90,10 +102,10 @@ export class RouteService {
       .sort((a, b) => b.currentCount / b.historicalP95 - a.currentCount / a.historicalP95)
       .slice(0, 8)
       .map((sensor) => ({
-        id: `live-${sensor.id}`,
+        id: `crowd-${sensor.id}`,
         severity: classifySensoryLevel(sensor.currentCount / sensor.historicalP95),
         area: sensor.name,
-        message: `Crowd level is above your ${Math.round(threshold * 100)}% tolerance. View a calmer route.`,
+        message: crowdAlertMessage(pedestrianResult.status.mode, threshold),
         confidence: pedestrianResult.status.confidence
       }));
 

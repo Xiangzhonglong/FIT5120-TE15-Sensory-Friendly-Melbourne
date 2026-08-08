@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { RouteSearchResponse } from "@sensory-melbourne/contracts";
+import type { Coordinates, RouteSearchResponse } from "@sensory-melbourne/contracts";
 import { AlertPanel } from "./components/AlertPanel";
 import { DataSources } from "./components/DataSources";
 import { MapPanel } from "./components/MapPanel";
@@ -8,12 +8,22 @@ import { RouteCard } from "./components/RouteCard";
 import { SearchPanel } from "./components/SearchPanel";
 import { TransportAccess } from "./components/TransportAccess";
 import { searchRoutes } from "./services/api";
+import { geocodeLocation } from "./services/geocoding";
+import {
+  DEFAULT_DESTINATION,
+  DEFAULT_ORIGIN,
+  findLocationSuggestion,
+  type LocationChoice
+} from "./services/locations";
 
-const destinations = {
-  "Melbourne Central": { lat: -37.8102, lng: 144.9628 },
-  "State Library Victoria": { lat: -37.8098, lng: 144.9652 },
-  "Flinders Street Station": { lat: -37.8183, lng: 144.9671 }
-} as const;
+type LocationDraft = {
+  label: string;
+  coordinates: Coordinates | null;
+};
+
+function locationDraft(choice: LocationChoice): LocationDraft {
+  return { label: choice.label, coordinates: choice.coordinates };
+}
 
 const dataModeLabels = {
   MOCK: "Demo data",
@@ -23,21 +33,60 @@ const dataModeLabels = {
 } as const;
 
 export function App() {
-  const [destination, setDestination] = useState<keyof typeof destinations>("Melbourne Central");
+  const [origin, setOrigin] = useState<LocationDraft>(() => locationDraft(DEFAULT_ORIGIN));
+  const [destination, setDestination] = useState<LocationDraft>(() => locationDraft(DEFAULT_DESTINATION));
   const [threshold, setThreshold] = useState(0.6);
   const [result, setResult] = useState<RouteSearchResponse | null>(null);
   const [selectedRouteId, setSelectedRouteId] = useState<string>();
   const [busy, setBusy] = useState(false);
+  const [locating, setLocating] = useState(false);
   const [error, setError] = useState<string>();
+  const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN || undefined;
+
+  const updateLocation = useCallback((value: string, setter: (draft: LocationDraft) => void) => {
+    const suggestion = findLocationSuggestion(value);
+    setter({ label: value, coordinates: suggestion?.coordinates ?? null });
+  }, []);
+
+  const useCurrentLocation = useCallback(() => {
+    setError(undefined);
+    if (!navigator.geolocation) {
+      setError("Current location is not supported by this browser. Enter an address instead.");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setOrigin({
+          label: "Current location",
+          coordinates: { lat: position.coords.latitude, lng: position.coords.longitude }
+        });
+        setLocating(false);
+      },
+      () => {
+        setError("We could not access your current location. Check browser permission or enter an address.");
+        setLocating(false);
+      },
+      { enableHighAccuracy: false, timeout: 10_000, maximumAge: 60_000 }
+    );
+  }, []);
 
   const runSearch = useCallback(async () => {
     setBusy(true);
     setError(undefined);
     try {
+      const [originCoordinates, destinationCoordinates] = await Promise.all([
+        origin.coordinates
+          ? Promise.resolve(origin.coordinates)
+          : geocodeLocation(origin.label, { accessToken: mapboxToken, restrictToCbd: false }),
+        destination.coordinates
+          ? Promise.resolve(destination.coordinates)
+          : geocodeLocation(destination.label, { accessToken: mapboxToken, restrictToCbd: true })
+      ]);
       const response = await searchRoutes({
-        origin: { lat: -37.8136, lng: 144.9631 },
-        destination: destinations[destination],
-        destinationLabel: destination,
+        origin: originCoordinates,
+        destination: destinationCoordinates,
+        destinationLabel: destination.label.trim(),
         preferences: { crowdThreshold: threshold }
       });
       setResult(response);
@@ -47,7 +96,7 @@ export function App() {
     } finally {
       setBusy(false);
     }
-  }, [destination, threshold]);
+  }, [destination, mapboxToken, origin, threshold]);
 
   useEffect(() => {
     void runSearch();
@@ -112,11 +161,17 @@ export function App() {
         <section className="planner-layout" id="planner" aria-label="Route planner">
           <aside>
             <SearchPanel
-              destination={destination}
+              origin={origin.label}
+              destination={destination.label}
               threshold={threshold}
               busy={busy}
-              onDestinationChange={(value) => setDestination(value as keyof typeof destinations)}
+              locating={locating}
+              originIsCurrentLocation={origin.label === "Current location" && Boolean(origin.coordinates)}
+              addressSearchAvailable={Boolean(mapboxToken)}
+              onOriginChange={(value) => updateLocation(value, setOrigin)}
+              onDestinationChange={(value) => updateLocation(value, setDestination)}
               onThresholdChange={setThreshold}
+              onUseCurrentLocation={useCurrentLocation}
               onSubmit={() => void runSearch()}
             />
           </aside>
@@ -178,12 +233,15 @@ export function App() {
           <div className="support-heading">
             <div>
               <div className="section-kicker">Plan with a little more certainty</div>
-              <h2>What is happening around your route</h2>
+              <h2>What the data suggests around your route</h2>
             </div>
-            <p>Alerts are possibilities based on current and historical pedestrian patterns. They are not guarantees.</p>
+            <p>Crowd estimates reflect the pedestrian source shown on each card. Historical and demonstration data are not current conditions or forecasts.</p>
           </div>
           <div className="insights-grid">
-            <AlertPanel alerts={result?.alerts ?? []} />
+            <AlertPanel
+              alerts={result?.alerts ?? []}
+              pedestrianSource={result?.dataSources.pedestrian}
+            />
             <QuietSpaces places={result?.quietSpaces ?? []} />
             <TransportAccess points={result?.transportAccess ?? []} />
           </div>

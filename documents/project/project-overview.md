@@ -4,6 +4,8 @@
 
 CalmPath compares walking routes in Melbourne CBD for people who prefer lower pedestrian pressure. It combines Mapbox route candidates with City of Melbourne, Neon and packaged pedestrian data, then explains each route using LOW, MODERATE or HIGH crowd-load levels.
 
+Users may choose suggested locations, enter an address, or use browser location as the route origin. Destinations remain constrained to the backend-supported Melbourne CBD boundary. Custom text is resolved through temporary Mapbox geocoding and is not stored by CalmPath.
+
 ## Current backend scope
 
 Included:
