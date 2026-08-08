@@ -1,0 +1,7 @@
+{
+  "framework": "vite",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm --filter @sensory-melbourne/web build",
+  "outputDirectory": "frontend/dist",
+  "regions": ["syd1"]
+}

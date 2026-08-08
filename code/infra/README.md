@@ -1,13 +1,54 @@
-# AWS deployment foundation
+# Vercel deployment
 
-`template.yaml` creates the public architecture described in the project document:
+CalmPath Melbourne is deployed as a public web application on Vercel. The current deployment uses Vercel for the frontend and serverless API functions, with Neon PostgreSQL providing the relational database.
 
-- private, versioned S3 bucket for the Vite build;
-- CloudFront Origin Access Control for S3;
-- API Gateway HTTP API and one Node.js 24 Lambda;
-- CloudFront `/api/*` routing to the API with caching disabled;
-- SPA 403/404 fallback to `index.html`.
+## Current deployment
 
-Build the repository before packaging the stack. After deployment, upload the contents of `frontend/dist/` to the `StaticSiteBucketName` output and invalidate `/*` on the `SiteDistribution`. The template intentionally uses the CloudFront default domain first; add ACM and a custom domain only after the course AWS account/domain convention is confirmed.
+- Vercel project: `calmpath-melbourne`
+- Production URL: <https://calmpath-melbourne.vercel.app>
+- Frontend: React, TypeScript and Vite
+- API runtime: Vercel Functions using Node.js 24
+- Function region: Sydney (`syd1`)
+- Database: Neon PostgreSQL in Sydney
+- Authentication: none; the application is public and does not collect user accounts or journey histories
+- Deployment method: manual Vercel CLI deployment
 
-The `MapboxServerToken` parameter is marked `NoEcho`, but a production deployment should source it from the team's approved AWS secret mechanism rather than command history.
+The frontend and API are deployed together from the `code/` directory. Requests under `/api/*` are handled by Vercel Functions, so a separate API Gateway is not required.
+
+## Vercel configuration
+
+The deployment settings are stored in `vercel.json`:
+
+- install command: `pnpm install --frozen-lockfile`
+- frontend build command: `pnpm --filter @sensory-melbourne/web build`
+- output directory: `frontend/dist`
+- function region: `syd1`
+
+The current Vercel Function entry points are:
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/health` | Confirms that the API runtime is available |
+| `GET` | `/api/db-health` | Confirms that the Neon database is reachable |
+| `POST` | `/api/routes` | Passes route requests to the backend application |
+
+`POST /api/routes` currently uses the backend mock composition. It must not be described as using live pedestrian or routing data until the backend integration is completed.
+
+## Environment variables
+
+`DATABASE_URL` is configured as a Sensitive environment variable for both Preview and Production deployments.
+
+It contains the pooled Neon PostgreSQL connection string for the read-only `calmpath_app` role. Database owner credentials must not be provided to the web application.
+
+Environment values must be configured through the Vercel dashboard or CLI. They must never be committed to Git.
+
+See `.env.example` for variable names only.
+
+## Validate before deployment
+
+From `code/`:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm check
+pnpm dlx vercel@latest build --prod

@@ -2,14 +2,12 @@
   "name": "sensory-friendly-melbourne",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@11.9.0",
-  "engines": {
-    "node": ">=24"
-  },
   "scripts": {
     "dev": "pnpm --parallel --filter @sensory-melbourne/api --filter @sensory-melbourne/web dev",
     "build": "pnpm --filter @sensory-melbourne/api build && pnpm --filter @sensory-melbourne/web build",
-    "typecheck": "pnpm -r typecheck",
+    "typecheck": "tsc -p tsconfig.json --noEmit && pnpm -r typecheck",
     "test": "pnpm -r --if-present test",
     "check": "pnpm typecheck && pnpm test && pnpm build"
   },
@@ -17,7 +15,10 @@
     "@types/node": "26.1.2",
     "esbuild": "0.28.1",
     "tsx": "4.23.7",
-    "typescript": "7.0.2",
+    "typescript": "6.0.2",
     "vitest": "4.1.10"
+  },
+  "engines": {
+  "node": "24.x"
   }
 }
