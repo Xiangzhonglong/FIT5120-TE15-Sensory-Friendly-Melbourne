@@ -30,6 +30,7 @@ Sample mode validates the pipeline with limited live and historical records. Ful
 | `quiet_space_candidates.csv` | Libraries, parks and public spaces with valid coordinates |
 | `baseline.json` | Median and P95 by sensor, weekday and hour |
 | `quiet-spaces-snapshot.json` | Versioned fallback snapshot of static place attributes |
+| `pedestrian-sensors-snapshot.json` | Active sensor names and coordinates for packaged fallback matching |
 
 `baseline.json` uses `sensors[sensorId][weekday][hour]`; weekday `0` is Monday. The quiet-space snapshot intentionally excludes `distanceM` because distance depends on the requested route or user location and must be calculated by the backend.
 
@@ -54,7 +55,7 @@ The three CSV files can initialise the corresponding RDS MySQL tables defined in
 
 For nearby places, the backend reads the candidate coordinates, calculates route-relative distance, filters relevant results and adds `distanceM` before returning the shared `QuietSpace` API type. `baseline.json` and `quiet-spaces-snapshot.json` may also support versioned fallback behaviour; they do not replace the cloud relational database.
 
-`clean_data.py` supplies reproducible retrieval, validation and transformation logic. Cloud deployment adds the scheduled Lambda handler, database connection and upsert logic, secrets, logging, retries, freshness checks and fallback handling.
+`clean_data.py` supplies reproducible retrieval, validation and transformation logic. The Vercel backend reads the cleaned outputs through Neon PostgreSQL and packaged snapshot providers, with logging, freshness checks and ordered fallback handling.
 
 ## Interpretation
 

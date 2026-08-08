@@ -6,11 +6,12 @@ import type { HttpApiEvent, HttpResult } from "./types.js";
 import { validateRouteSearchRequest } from "./validation.js";
 
 const MAX_REQUEST_BYTES = 16_384;
+const ALLOWED_ORIGIN = process.env.APP_ORIGIN ?? "*";
 
 const headers = {
   "content-type": "application/json; charset=utf-8",
   "cache-control": "no-store",
-  "access-control-allow-origin": "*",
+  "access-control-allow-origin": ALLOWED_ORIGIN,
   "access-control-allow-headers": "content-type",
   "access-control-allow-methods": "GET,POST,OPTIONS"
 };
@@ -96,17 +97,27 @@ export async function routeRequest(
     if (method === "GET" && path.endsWith("/crowd")) {
       const result = await application.pedestrianProvider.getCurrentSensors();
       return complete(json(200, {
-        hotspots: result.data.map((sensor) => {
-          const score = sensorIntensity(sensor.currentCount, sensor.historicalP95);
-          return { ...sensor, score, sensoryLevel: classifySensoryLevel(score) };
-        }),
+        hotspots: result.data
+          .map((sensor) => {
+            const score = sensorIntensity(sensor.currentCount, sensor.historicalP95);
+            return { ...sensor, score, sensoryLevel: classifySensoryLevel(score) };
+          })
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 20),
         dataSource: result.status
       }));
     }
 
     if (method === "GET" && path.endsWith("/quiet-spaces")) {
-      const result = await application.quietSpaceRepository.findNearRoutes([]);
-      return complete(json(200, { quietSpaces: result.data, dataSource: result.status }));
+      const result = await application.routeService.search(
+        defaultRequest(),
+        requestId ? { requestId } : {}
+      );
+      return complete(json(200, {
+        quietSpaces: result.quietSpaces,
+        dataSource: result.dataSources.quietSpaces,
+        mode: result.mode
+      }));
     }
 
     if (method === "GET" && path.endsWith("/alerts")) {

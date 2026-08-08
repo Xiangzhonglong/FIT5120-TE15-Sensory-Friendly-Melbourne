@@ -1,0 +1,1080 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-08T21:21:12.617386+10:00",
+  "source": "City of Melbourne pedestrian sensor locations",
+  "sourceDatasetId": "pedestrian-counting-system-sensor-locations",
+  "sensors": [
+    {
+      "id": "3",
+      "name": "Melbourne Central",
+      "location": {
+        "lat": -37.81101524,
+        "lng": 144.96429485
+      }
+    },
+    {
+      "id": "5",
+      "name": "Princes Bridge",
+      "location": {
+        "lat": -37.81874249,
+        "lng": 144.96787656
+      }
+    },
+    {
+      "id": "9",
+      "name": "Southern Cross Station",
+      "location": {
+        "lat": -37.81982992,
+        "lng": 144.95102555
+      }
+    },
+    {
+      "id": "11",
+      "name": "Docklands Waterfront City Building Side",
+      "location": {
+        "lat": -37.81566651,
+        "lng": 144.93974366
+      }
+    },
+    {
+      "id": "12",
+      "name": "New Quay",
+      "location": {
+        "lat": -37.81457988,
+        "lng": 144.94292398
+      }
+    },
+    {
+      "id": "14",
+      "name": "Sandridge Bridge",
+      "location": {
+        "lat": -37.82011242,
+        "lng": 144.96291897
+      }
+    },
+    {
+      "id": "18",
+      "name": "Collins Place (North)",
+      "location": {
+        "lat": -37.81344862,
+        "lng": 144.97305353
+      }
+    },
+    {
+      "id": "19",
+      "name": "Chinatown-Swanston St (North)",
+      "location": {
+        "lat": -37.81237202,
+        "lng": 144.96550671
+      }
+    },
+    {
+      "id": "20",
+      "name": "Chinatown-Lt Bourke St (South)",
+      "location": {
+        "lat": -37.81172914,
+        "lng": 144.9682466
+      }
+    },
+    {
+      "id": "27",
+      "name": "QV Market-Peel St",
+      "location": {
+        "lat": -37.80606888,
+        "lng": 144.95644692
+      }
+    },
+    {
+      "id": "35",
+      "name": "Southbank Promenade",
+      "location": {
+        "lat": -37.82018685,
+        "lng": 144.96508508
+      }
+    },
+    {
+      "id": "41",
+      "name": "Flinders La-Swanston St (West)",
+      "location": {
+        "lat": -37.81668634,
+        "lng": 144.96689733
+      }
+    },
+    {
+      "id": "43",
+      "name": "Monash Rd-Swanston St (West)",
+      "location": {
+        "lat": -37.79844526,
+        "lng": 144.96411782
+      }
+    },
+    {
+      "id": "44",
+      "name": "Tin Alley-Swanston St (West)",
+      "location": {
+        "lat": -37.79698741,
+        "lng": 144.96441306
+      }
+    },
+    {
+      "id": "46",
+      "name": "Pelham St (South)",
+      "location": {
+        "lat": -37.80240719,
+        "lng": 144.9615673
+      }
+    },
+    {
+      "id": "47",
+      "name": "Melbourne Central-Elizabeth St (East)",
+      "location": {
+        "lat": -37.81258467,
+        "lng": 144.9625775
+      }
+    },
+    {
+      "id": "48",
+      "name": "QVM-Queen St (East)",
+      "location": {
+        "lat": -37.80631581,
+        "lng": 144.95866697
+      }
+    },
+    {
+      "id": "50",
+      "name": "Faraday St-Lygon St (West)",
+      "location": {
+        "lat": -37.79808192,
+        "lng": 144.96721013
+      }
+    },
+    {
+      "id": "51",
+      "name": "QVM-Franklin St (North)",
+      "location": {
+        "lat": -37.80841815,
+        "lng": 144.95906316
+      }
+    },
+    {
+      "id": "52",
+      "name": "Elizabeth St-Lonsdale St (South)",
+      "location": {
+        "lat": -37.81252157,
+        "lng": 144.9619401
+      }
+    },
+    {
+      "id": "53",
+      "name": "Collins Street (North)",
+      "location": {
+        "lat": -37.81564191,
+        "lng": 144.965499
+      }
+    },
+    {
+      "id": "54",
+      "name": "Lincoln-Swanston (West)",
+      "location": {
+        "lat": -37.804024,
+        "lng": 144.96308399
+      }
+    },
+    {
+      "id": "56",
+      "name": "Lonsdale St - Elizabeth St (North)",
+      "location": {
+        "lat": -37.81234775,
+        "lng": 144.96153311
+      }
+    },
+    {
+      "id": "68",
+      "name": "Flinders Ln -Degraves St (North)",
+      "location": {
+        "lat": -37.8168479,
+        "lng": 144.96559789
+      }
+    },
+    {
+      "id": "69",
+      "name": "Flinders Ln -Degraves St (Crossing)",
+      "location": {
+        "lat": -37.81687226,
+        "lng": 144.96559144
+      }
+    },
+    {
+      "id": "72",
+      "name": "Flinders St- ACMI",
+      "location": {
+        "lat": -37.81726338,
+        "lng": 144.96872809
+      }
+    },
+    {
+      "id": "81",
+      "name": "Boyd Commuinty - Front door",
+      "location": {
+        "lat": -37.82579138,
+        "lng": 144.96084343
+      }
+    },
+    {
+      "id": "82",
+      "name": "512 Elizabeth Street",
+      "location": {
+        "lat": -37.80667227,
+        "lng": 144.96005554
+      }
+    },
+    {
+      "id": "85",
+      "name": "Macaulay Rd (North)",
+      "location": {
+        "lat": -37.79432415,
+        "lng": 144.92973378
+      }
+    },
+    {
+      "id": "86",
+      "name": "Queensberry St - Errol St (South)",
+      "location": {
+        "lat": -37.80309992,
+        "lng": 144.94908064
+      }
+    },
+    {
+      "id": "89",
+      "name": "City Library",
+      "location": {
+        "lat": -37.81685964,
+        "lng": 144.96586575
+      }
+    },
+    {
+      "id": "90",
+      "name": "Boyd Community Hub- Library",
+      "location": {
+        "lat": -37.82556207,
+        "lng": 144.96115421
+      }
+    },
+    {
+      "id": "93",
+      "name": "East Melbourne Library",
+      "location": {
+        "lat": -37.81498411,
+        "lng": 144.98638807
+      }
+    },
+    {
+      "id": "96",
+      "name": "Fitzroy Garden Visitor Centre Internal",
+      "location": {
+        "lat": -37.81499687,
+        "lng": 144.97925064
+      }
+    },
+    {
+      "id": "105",
+      "name": "Kathleen Syme Library Lib",
+      "location": {
+        "lat": -37.79861828,
+        "lng": 144.9652825
+      }
+    },
+    {
+      "id": "108",
+      "name": "William St - Little Lonsdale St (West)",
+      "location": {
+        "lat": -37.81295822,
+        "lng": 144.95678789
+      }
+    },
+    {
+      "id": "116",
+      "name": "Fitzroy Garden Visitor Centre Cafe Verandah",
+      "location": {
+        "lat": -37.81493732,
+        "lng": 144.97932442
+      }
+    },
+    {
+      "id": "117",
+      "name": "114 Flinders Street Car Park Footpath",
+      "location": {
+        "lat": -37.81629332,
+        "lng": 144.97090877
+      }
+    },
+    {
+      "id": "123",
+      "name": "Birrarung Marr East - Batman Ave Bridge Entry",
+      "location": {
+        "lat": -37.81753741,
+        "lng": 144.97329734
+      }
+    },
+    {
+      "id": "132",
+      "name": "I-Hub Corner of King Street and Latrobe Street (317-335 King)",
+      "location": {
+        "lat": -37.81267639,
+        "lng": 144.95386444
+      }
+    },
+    {
+      "id": "133",
+      "name": "I-Hub Southern Cross Station - Lonsdale Street Entrance - South",
+      "location": {
+        "lat": -37.81531435,
+        "lng": 144.95227769
+      }
+    },
+    {
+      "id": "136",
+      "name": "COM Pole 1120 - Towards the City, Near Federation Square Bridge",
+      "location": {
+        "lat": -37.8184141,
+        "lng": 144.97357915
+      }
+    },
+    {
+      "id": "139",
+      "name": "COM Pole 1647 - Sandridge Bridge Signal Box",
+      "location": {
+        "lat": -37.81959923,
+        "lng": 144.9632832
+      }
+    },
+    {
+      "id": "140",
+      "name": "COM Pole 2837 - Boyd Park",
+      "location": {
+        "lat": -37.82590962,
+        "lng": 144.96185972
+      }
+    },
+    {
+      "id": "142",
+      "name": "COM Pole 1584 - Hammer Hall Entrance",
+      "location": {
+        "lat": -37.81970749,
+        "lng": 144.96795734
+      }
+    },
+    {
+      "id": "146",
+      "name": "narrm ngarrgu Library - Level 1 - Lift 3",
+      "location": {
+        "lat": -37.80766922,
+        "lng": 144.95840594
+      }
+    },
+    {
+      "id": "150",
+      "name": "narrm ngarrgu Library - Level 1 Main Stairs B",
+      "location": {
+        "lat": -37.80791198,
+        "lng": 144.95820087
+      }
+    },
+    {
+      "id": "155",
+      "name": "narrm ngarrgu Library - Level 3 Children's Library Door 2",
+      "location": {
+        "lat": -37.80783201,
+        "lng": 144.95845043
+      }
+    },
+    {
+      "id": "160",
+      "name": "City Baths, 420 Swanston Street - Main Entry",
+      "location": {
+        "lat": -37.80699526,
+        "lng": 144.96306214
+      }
+    },
+    {
+      "id": "161",
+      "name": "Birrarung Marr - COM - Pole 1109",
+      "location": {
+        "lat": -37.81851276,
+        "lng": 144.97131336
+      }
+    },
+    {
+      "id": "165",
+      "name": "475 Spencer Street",
+      "location": {
+        "lat": -37.80953359,
+        "lng": 144.94939004
+      }
+    },
+    {
+      "id": "181",
+      "name": "368 Elizabeth Street",
+      "location": {
+        "lat": -37.81009465,
+        "lng": 144.96143149
+      }
+    },
+    {
+      "id": "188",
+      "name": "RMIT Building 51 - 80-92 Victoria Street",
+      "location": {
+        "lat": -37.80663222,
+        "lng": 144.96456557
+      }
+    },
+    {
+      "id": "1",
+      "name": "Bourke Street Mall (North)",
+      "location": {
+        "lat": -37.81349441,
+        "lng": 144.96515323
+      }
+    },
+    {
+      "id": "4",
+      "name": "Town Hall (West)",
+      "location": {
+        "lat": -37.81487988,
+        "lng": 144.9660878
+      }
+    },
+    {
+      "id": "6",
+      "name": "Flinders Underpass - Myki Barriers",
+      "location": {
+        "lat": -37.81907439,
+        "lng": 144.96557866
+      }
+    },
+    {
+      "id": "10",
+      "name": "Victoria Point",
+      "location": {
+        "lat": -37.81876474,
+        "lng": 144.94710545
+      }
+    },
+    {
+      "id": "17",
+      "name": "Collins Place (South)",
+      "location": {
+        "lat": -37.81362543,
+        "lng": 144.97323591
+      }
+    },
+    {
+      "id": "24",
+      "name": "Spencer St-Collins St (North)",
+      "location": {
+        "lat": -37.81887963,
+        "lng": 144.95449198
+      }
+    },
+    {
+      "id": "31",
+      "name": "Lygon St (West)",
+      "location": {
+        "lat": -37.80169681,
+        "lng": 144.96658911
+      }
+    },
+    {
+      "id": "36",
+      "name": "Queen St (West)",
+      "location": {
+        "lat": -37.81652527,
+        "lng": 144.96121062
+      }
+    },
+    {
+      "id": "39",
+      "name": "Alfred Place",
+      "location": {
+        "lat": -37.81379749,
+        "lng": 144.96995745
+      }
+    },
+    {
+      "id": "45",
+      "name": "Little Collins St-Swanston St (East)",
+      "location": {
+        "lat": -37.81414075,
+        "lng": 144.96609379
+      }
+    },
+    {
+      "id": "49",
+      "name": "QVM-Therry St (South)",
+      "location": {
+        "lat": -37.80730068,
+        "lng": 144.95956055
+      }
+    },
+    {
+      "id": "58",
+      "name": "Bourke St - Spencer St (North)",
+      "location": {
+        "lat": -37.81686075,
+        "lng": 144.95358075
+      }
+    },
+    {
+      "id": "59",
+      "name": "Building 80 RMIT",
+      "location": {
+        "lat": -37.80825648,
+        "lng": 144.96304859
+      }
+    },
+    {
+      "id": "61",
+      "name": "RMIT Building 14",
+      "location": {
+        "lat": -37.80767455,
+        "lng": 144.96309114
+      }
+    },
+    {
+      "id": "62",
+      "name": "La Trobe St (North)",
+      "location": {
+        "lat": -37.80996494,
+        "lng": 144.96216521
+      }
+    },
+    {
+      "id": "66",
+      "name": "QV2 Apartments, 300 Swanston Street",
+      "location": {
+        "lat": -37.81057846,
+        "lng": 144.96444294
+      }
+    },
+    {
+      "id": "75",
+      "name": "Spring St- Flinders st (West)",
+      "location": {
+        "lat": -37.81515276,
+        "lng": 144.97467661
+      }
+    },
+    {
+      "id": "77",
+      "name": "Harbour Esplanade (West) - Pedestrian path",
+      "location": {
+        "lat": -37.81441438,
+        "lng": 144.94433026
+      }
+    },
+    {
+      "id": "79",
+      "name": "Flinders St (South)",
+      "location": {
+        "lat": -37.81794046,
+        "lng": 144.96616678
+      }
+    },
+    {
+      "id": "80",
+      "name": "Boyd Commuinty - Rear door",
+      "location": {
+        "lat": -37.8254567,
+        "lng": 144.96131206
+      }
+    },
+    {
+      "id": "83",
+      "name": "510 Elizabeth Street",
+      "location": {
+        "lat": -37.8067319,
+        "lng": 144.96005113
+      }
+    },
+    {
+      "id": "84",
+      "name": "Elizabeth St - Flinders St (East) - New footpath",
+      "location": {
+        "lat": -37.81798049,
+        "lng": 144.96503383
+      }
+    },
+    {
+      "id": "87",
+      "name": "Errol St (West)",
+      "location": {
+        "lat": -37.80454949,
+        "lng": 144.94921863
+      }
+    },
+    {
+      "id": "91",
+      "name": "Library at The Dock-North side",
+      "location": {
+        "lat": -37.8200188,
+        "lng": 144.94029861
+      }
+    },
+    {
+      "id": "94",
+      "name": "Fitzroy Garden- The Conservatory",
+      "location": {
+        "lat": -37.81424531,
+        "lng": 144.97851861
+      }
+    },
+    {
+      "id": "95",
+      "name": "Fitzroy Garden Visitor Centre External",
+      "location": {
+        "lat": -37.81488315,
+        "lng": 144.97926569
+      }
+    },
+    {
+      "id": "102",
+      "name": "North Melbourne Library",
+      "location": {
+        "lat": -37.80340543,
+        "lng": 144.94977011
+      }
+    },
+    {
+      "id": "103",
+      "name": "Kensington Town Hall",
+      "location": {
+        "lat": -37.7893527,
+        "lng": 144.9286055
+      }
+    },
+    {
+      "id": "107",
+      "name": "Royal Mint 280 William St",
+      "location": {
+        "lat": -37.81246271,
+        "lng": 144.95690188
+      }
+    },
+    {
+      "id": "109",
+      "name": "La Trobe St- William St (South)",
+      "location": {
+        "lat": -37.81193681,
+        "lng": 144.95621105
+      }
+    },
+    {
+      "id": "124",
+      "name": "Birrarung Marr East - Batman Ave Bridge Entry",
+      "location": {
+        "lat": -37.81757416,
+        "lng": 144.97329934
+      }
+    },
+    {
+      "id": "135",
+      "name": "I-Hub Southern Cross Station - Bourke Street Entrance - South",
+      "location": {
+        "lat": -37.8172861,
+        "lng": 144.95319102
+      }
+    },
+    {
+      "id": "137",
+      "name": "COM Pole 2353 - Towards the city, NAB Building",
+      "location": {
+        "lat": -37.81894815,
+        "lng": 144.94612292
+      }
+    },
+    {
+      "id": "138",
+      "name": "COM Pole 1671 - Enterprize Park, Queens Bridge",
+      "location": {
+        "lat": -37.81996544,
+        "lng": 144.95981454
+      }
+    },
+    {
+      "id": "141",
+      "name": "Awning of Nationwide Parking 474 Flinders Street",
+      "location": {
+        "lat": -37.81997273,
+        "lng": 144.95834911
+      }
+    },
+    {
+      "id": "148",
+      "name": "narrm ngarrgu Library - Level 1 - Meeting Room Lift 2",
+      "location": {
+        "lat": -37.80772224,
+        "lng": 144.95823515
+      }
+    },
+    {
+      "id": "149",
+      "name": "narrm ngarrgu Library - Level 1 Main Stairs A",
+      "location": {
+        "lat": -37.80781158,
+        "lng": 144.9582219
+      }
+    },
+    {
+      "id": "151",
+      "name": "narrm ngarrgu Library - Level 2 - Collections Stairs A",
+      "location": {
+        "lat": -37.80771581,
+        "lng": 144.9586238
+      }
+    },
+    {
+      "id": "153",
+      "name": "narrm ngarrgu Library - Level 2 - Study Area Lifts 2",
+      "location": {
+        "lat": -37.80780367,
+        "lng": 144.95829765
+      }
+    },
+    {
+      "id": "154",
+      "name": "narrm ngarrgu Library - Level 3 Children's Library Door 1",
+      "location": {
+        "lat": -37.80778437,
+        "lng": 144.95862772
+      }
+    },
+    {
+      "id": "158",
+      "name": "514 Elizebeth Street",
+      "location": {
+        "lat": -37.80657467,
+        "lng": 144.96007044
+      }
+    },
+    {
+      "id": "164",
+      "name": "I-Hub 526 La Trobe Street (Footpath)",
+      "location": {
+        "lat": -37.813005,
+        "lng": 144.95160411
+      }
+    },
+    {
+      "id": "180",
+      "name": "Pumping Station No.2, 330 Macaulay Road",
+      "location": {
+        "lat": -37.79497059,
+        "lng": 144.93530329
+      }
+    },
+    {
+      "id": "185",
+      "name": "197 Elizabeth Street",
+      "location": {
+        "lat": -37.81374643,
+        "lng": 144.96276183
+      }
+    },
+    {
+      "id": "209",
+      "name": "Flinders Underpass - Walkway",
+      "location": {
+        "lat": -37.81909037,
+        "lng": 144.96549709
+      }
+    },
+    {
+      "id": "2",
+      "name": "Bourke Street Mall (South)",
+      "location": {
+        "lat": -37.81380668,
+        "lng": 144.96516718
+      }
+    },
+    {
+      "id": "8",
+      "name": "Webb Bridge",
+      "location": {
+        "lat": -37.82293543,
+        "lng": 144.9471751
+      }
+    },
+    {
+      "id": "21",
+      "name": "155-161 Russell Street",
+      "location": {
+        "lat": -37.81267313,
+        "lng": 144.96788288
+      }
+    },
+    {
+      "id": "23",
+      "name": "Spencer St-Collins St (South)",
+      "location": {
+        "lat": -37.81909256,
+        "lng": 144.95452748
+      }
+    },
+    {
+      "id": "25",
+      "name": "Melbourne Convention Exhibition Centre",
+      "location": {
+        "lat": -37.82401776,
+        "lng": 144.95604426
+      }
+    },
+    {
+      "id": "29",
+      "name": "St Kilda Rd-Alexandra Gardens",
+      "location": {
+        "lat": -37.8199817,
+        "lng": 144.96872865
+      }
+    },
+    {
+      "id": "30",
+      "name": "Lonsdale St (South)",
+      "location": {
+        "lat": -37.8112185,
+        "lng": 144.96656806
+      }
+    },
+    {
+      "id": "37",
+      "name": "Lygon St (East)",
+      "location": {
+        "lat": -37.80107122,
+        "lng": 144.96704554
+      }
+    },
+    {
+      "id": "40",
+      "name": "Lonsdale St-Spring St (West)",
+      "location": {
+        "lat": -37.80999341,
+        "lng": 144.97227587
+      }
+    },
+    {
+      "id": "42",
+      "name": "Grattan St-Swanston St (West)",
+      "location": {
+        "lat": -37.80008566,
+        "lng": 144.96386412
+      }
+    },
+    {
+      "id": "63",
+      "name": "231 Bourke St",
+      "location": {
+        "lat": -37.81333081,
+        "lng": 144.96675571
+      }
+    },
+    {
+      "id": "67",
+      "name": "Flinders Ln -Degraves St (South)",
+      "location": {
+        "lat": -37.81688755,
+        "lng": 144.96562569
+      }
+    },
+    {
+      "id": "70",
+      "name": "Errol Street (East)",
+      "location": {
+        "lat": -37.80456984,
+        "lng": 144.94946228
+      }
+    },
+    {
+      "id": "71",
+      "name": "Westwood Place",
+      "location": {
+        "lat": -37.81235775,
+        "lng": 144.97136962
+      }
+    },
+    {
+      "id": "76",
+      "name": "Macaulay Rd- Bellair St",
+      "location": {
+        "lat": -37.79453803,
+        "lng": 144.93036194
+      }
+    },
+    {
+      "id": "92",
+      "name": "Library at The Dock-South side",
+      "location": {
+        "lat": -37.82016286,
+        "lng": 144.94039584
+      }
+    },
+    {
+      "id": "99",
+      "name": "Town Hall Visitor Centre",
+      "location": {
+        "lat": -37.81462143,
+        "lng": 144.96623279
+      }
+    },
+    {
+      "id": "104",
+      "name": "Kathleen Syme Library Main",
+      "location": {
+        "lat": -37.79863553,
+        "lng": 144.96548206
+      }
+    },
+    {
+      "id": "106",
+      "name": "Kathleen Syme Library Cafe",
+      "location": {
+        "lat": -37.79859459,
+        "lng": 144.96510921
+      }
+    },
+    {
+      "id": "118",
+      "name": "114 Flinders Street Car Park Crossing",
+      "location": {
+        "lat": -37.81632783,
+        "lng": 144.97090512
+      }
+    },
+    {
+      "id": "130",
+      "name": "I-Hub 892 Bourke Street",
+      "location": {
+        "lat": -37.8204637,
+        "lng": 144.94126826
+      }
+    },
+    {
+      "id": "131",
+      "name": "I-Hub Corner of King Street and Flinders Street (2-6 King)",
+      "location": {
+        "lat": -37.82009057,
+        "lng": 144.95758725
+      }
+    },
+    {
+      "id": "134",
+      "name": "I-Hub Southern Cross Station - Bourke Street Entrance - North",
+      "location": {
+        "lat": -37.81694221,
+        "lng": 144.95303935
+      }
+    },
+    {
+      "id": "143",
+      "name": "Mounted on Toilet - Spencer Street, Batman Park",
+      "location": {
+        "lat": -37.821728,
+        "lng": 144.95557015
+      }
+    },
+    {
+      "id": "144",
+      "name": "narrm ngarrgu Library - Level 1 - Lift 1",
+      "location": {
+        "lat": -37.80760657,
+        "lng": 144.95862847
+      }
+    },
+    {
+      "id": "145",
+      "name": "narrm ngarrgu Library - Level 1 - Lift 2",
+      "location": {
+        "lat": -37.80763871,
+        "lng": 144.95850722
+      }
+    },
+    {
+      "id": "147",
+      "name": "narrm ngarrgu Library - Level 1 - Meeting Room Lift 1",
+      "location": {
+        "lat": -37.80769805,
+        "lng": 144.95832131
+      }
+    },
+    {
+      "id": "152",
+      "name": "narrm ngarrgu Library - Level 2 - Study Area Lifts 1",
+      "location": {
+        "lat": -37.80776728,
+        "lng": 144.95843977
+      }
+    },
+    {
+      "id": "159",
+      "name": "516 Elizeberth Street",
+      "location": {
+        "lat": -37.80651646,
+        "lng": 144.96007934
+      }
+    },
+    {
+      "id": "162",
+      "name": "iHub 489 Elizabeth Street",
+      "location": {
+        "lat": -37.80740397,
+        "lng": 144.95987909
+      }
+    },
+    {
+      "id": "166",
+      "name": "484 Spencer Street",
+      "location": {
+        "lat": -37.80896733,
+        "lng": 144.94931703
+      }
+    },
+    {
+      "id": "167",
+      "name": "I-Hub 526 La Trobe Street (Crossing)",
+      "location": {
+        "lat": -37.81304149,
+        "lng": 144.95155955
+      }
+    },
+    {
+      "id": "179",
+      "name": "61-67 Power Street Southbank",
+      "location": {
+        "lat": -37.82392385,
+        "lng": 144.96299677
+      }
+    },
+    {
+      "id": "182",
+      "name": "163 King Street",
+      "location": {
+        "lat": -37.81627451,
+        "lng": 144.95550503
+      }
+    },
+    {
+      "id": "184",
+      "name": "124 Elizabeth Street",
+      "location": {
+        "lat": -37.81512416,
+        "lng": 144.96371988
+      }
+    },
+    {
+      "id": "187",
+      "name": "RMIT Building 22 - 330 Swanston Street",
+      "location": {
+        "lat": -37.80942561,
+        "lng": 144.96395473
+      }
+    }
+  ]
+}
