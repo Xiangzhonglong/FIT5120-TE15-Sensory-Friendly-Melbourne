@@ -9,7 +9,8 @@
     "build": "pnpm --filter @sensory-melbourne/api build && pnpm --filter @sensory-melbourne/web build",
     "typecheck": "tsc -p tsconfig.json --noEmit && pnpm -r typecheck",
     "test": "pnpm -r --if-present test",
-    "check": "pnpm typecheck && pnpm test && pnpm build"
+    "check": "pnpm typecheck && pnpm test && pnpm build",
+    "smoke:production": "tsx scripts/smoke-production.ts"
   },
   "devDependencies": {
     "@types/node": "26.1.2",

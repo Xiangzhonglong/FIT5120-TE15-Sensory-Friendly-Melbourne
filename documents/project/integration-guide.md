@@ -2,94 +2,52 @@
 
 ## Ownership model
 
-| Area | Primary owner | Owned boundary |
+| Area | Owner | Deliverable |
 | --- | --- | --- |
-| Architecture and backend integration | Architecture owner | Shared contracts, ports, `RouteService`, composition, error policy and integration tests |
-| Frontend and accessibility | Frontend owner | React components, visual states, keyboard use, mobile layout and UI tests |
-| Mapbox routing | Routing owner | Geocoding, walking alternatives and map-specific transformations |
-| Melbourne pedestrian data | Data owner | Sensor data, historical baseline, matching and score calibration |
-| Quiet spaces and public transport | Places owner | Approved source selection, proximity and source metadata |
-| AWS, CI and QA | Platform owner | Deployment, secrets, automated checks, monitoring and acceptance evidence |
+| Architecture and backend | Xiangzhonglong | Contracts, ports, composition, security, fallback, integration tests and docs |
+| Frontend and accessibility | Frontend owner | UI, keyboard/mobile behaviour and accessibility evidence |
+| Mapbox deployment | Deployment owner with backend owner | Vercel server token, redeploy and live smoke evidence |
+| Pedestrian data | Data owner with backend owner | Feed policy, calibration and data-quality evidence |
+| Quiet spaces and transport | Places owner | Approved datasets, attribution, fixtures and suitability rules |
+| QA and acceptance | Whole team/mentor | User testing, defect register and sign-off |
 
-## Integration contract
+## Backend integration contract
 
-Provider owners implement an interface in `code/backend/src/ports` and place provider-specific code under `code/backend/src/adapters`. Raw provider payload types stay inside that adapter.
+New providers implement a port under `code/backend/src/ports` and keep raw third-party payloads inside their adapter. Providers must return the shared domain model, accurate source mode and timestamp, documented freshness rules, safe timeout/error behaviour and saved non-secret fixture tests.
 
-Provider implementations must:
+Only `code/backend/src/application.ts` registers providers. Team code must not import provider adapters directly into `RouteService` or change `/api/routes` without coordination.
 
-- return the shared domain model;
-- include accurate source status;
-- use server-side credentials only where required;
-- define timeout behaviour;
-- include saved-fixture tests;
-- avoid logging tokens or full user journeys;
-- document rate limits and fallback expectations.
+## Completed backend integrations
 
-The architecture owner registers accepted providers in `code/backend/src/application.ts`. Provider code must not be imported directly into `RouteService`.
+- Mapbox walking route adapter using `MAPBOX_SERVER_TOKEN` and `longitude,latitude` coordinates.
+- City of Melbourne past-hour pedestrian adapter.
+- Neon pedestrian and quiet-space read-only repositories using `DATABASE_URL`.
+- Packaged baseline/snapshot adapters and geospatial sensor matcher.
+- Live-to-snapshot-to-mock fallback with truthful source metadata.
+- CI quality gate and production smoke command.
 
-## Handoff checklist
+## Remaining handoffs
 
-Before requesting integration, the provider owner supplies:
+### Deployment owner
 
-- implementation files;
-- provider-specific payload types;
-- mapping tests using saved, non-secret fixtures;
-- documented environment variables;
-- source name and timestamp semantics;
-- confidence and staleness rules;
-- error and timeout behaviour;
-- the expected fallback provider;
-- `pnpm check` results.
+1. Configure `MAPBOX_SERVER_TOKEN`, `DATABASE_URL` and exact `APP_ORIGIN` in Vercel Preview and Production.
+2. Decide whether `LIVE_DATA_ENABLED=true` is approved.
+3. Redeploy the latest `main` and run `REQUIRE_LIVE=true pnpm smoke:production`.
+4. Save the output as release evidence; never copy secret values into tickets or documentation.
 
-## Pending team handoffs
+### Places/transport owner
 
-### Mapbox
+Provide the approved source, attribution, update policy and fixture for transport stops. Implement `TransportRepository` or hand the source contract to Xiangzhonglong for integration. Until then, the API deliberately reports an empty `MOCK` transport result.
 
-- Implement `RouteProvider`.
-- Support destination geocoding and multiple walking alternatives.
-- Return shared `CandidateRoute` geometry.
-- Keep browser and server tokens separate.
-- Provide timeout and rate-limit fixtures.
+### Frontend/QA team
 
-### City of Melbourne pedestrian data
+Complete accessibility, mobile and representative-user validation and record mentor approval. These are acceptance requirements but are not backend code tasks.
 
-- Implement `PedestrianProvider`.
-- Implement a real `SensorMatcher`.
-- Define current-count and historical-P95 time windows.
-- Record data timestamps, freshness and confidence.
-- Provide live-to-snapshot fallback tests.
+## Pull-request checklist
 
-### Quiet spaces and transport
-
-- Obtain mentor approval for both sources.
-- Implement `QuietSpaceRepository` and `TransportRepository`.
-- Calculate route proximity.
-- Avoid claiming a location is guaranteed quiet.
-- Include source attribution and update time.
-
-### Snapshot and baseline
-
-- Implement `SnapshotRepository` using versioned packaged JSON or private S3.
-- Define maximum acceptable age per source.
-- Extend the offline baseline job with the approved historical dataset.
-- Keep snapshot contents non-personal and reviewable.
-
-### Platform and QA
-
-- Add a CI workflow running `pnpm check`.
-- Deploy the SAM stack to staging.
-- Configure secrets without command-history exposure.
-- Restrict production CORS to the CloudFront origin.
-- Add CloudWatch alarms and a public smoke test.
-
-## Integration owner checklist
-
-For every integration pull request:
-
-1. Confirm the port has not been bypassed.
-2. Confirm shared contracts change only when necessary.
-3. Confirm source mode and timestamps are truthful.
-4. Confirm fallback behaviour is tested.
-5. Confirm provider errors are translated safely.
-6. Run the complete quality gate.
-7. Update requirements traceability.
+1. The provider port is not bypassed.
+2. No token, connection string or personal journey appears in code, fixtures or logs.
+3. Source mode, freshness and fallback reason are truthful.
+4. Failure and fallback paths are tested.
+5. `pnpm check` passes.
+6. Traceability and environment-variable documentation are updated.

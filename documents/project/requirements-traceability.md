@@ -1,39 +1,34 @@
 # Requirements traceability
 
-| Requirement | Foundation location | Current status | Acceptance evidence still required |
+Status values distinguish repository completion from deployment and team-owned acceptance evidence.
+
+| Requirement | Backend/architecture evidence | Status | Remaining owner/action |
 | --- | --- | --- | --- |
-| Enter a Melbourne CBD destination | `SearchPanel`, route contract and HTTP validation | Fixed destinations work; CBD bounds are enforced | Live geocoding, invalid-location and out-of-area UI tests |
-| Sensory-aware walking route using open pedestrian data | `RouteProvider`, `PedestrianProvider`, `SensorMatcher`, `RouteService`, scoring | Integration ports and mock flow complete | Live provider fixtures, source timestamp and spatial-match evidence |
-| HIGH/LOW sensory indicator | `RouteCard` and shared levels | LOW/MODERATE/HIGH use text, shape and colour | Component and accessibility audit |
-| Adjust recommendation above user threshold | `RouteService` | Implemented and tested with mock providers | Live-data boundary cases and representative-user validation |
-| Public transport access points | contract and `TransportRepository` | Interface and response field complete; default result empty | Approved source, proximity test and map markers |
-| Real-time high-density alerts | `/api/crowd`, route alerts and pedestrian source status | Mock provider with source metadata | Live past-hour fixture, freshness and fallback test |
-| Quiet refuge locations on demand | `QuietSpaces` and `QuietSpaceRepository` | Mock repository and UI complete | Approved dataset, suitability metadata and user validation |
-| Next-hour predictive alert | prediction service | Transparent rule-based boundary complete | Historical baseline algorithm and accuracy comparison |
-| Alert accuracy validated | test and documentation boundary | Not complete | Saved cases comparing forecast, observed and city data |
-| Accessibility/usability testing | semantic UI and reduced-motion styles | Foundation implemented | Automated axe, keyboard record and representative-user evidence |
-| Critical/high defects resolved | quality command and PR process | Local quality gate ready | CI workflow and final defect register |
-| Public AWS URL, no login | SAM API, S3 and CloudFront architecture | Infrastructure template complete; deployment not performed | CloudFront URL, restricted CORS and smoke test |
-| Stable integration contracts | shared contracts, ports and composition root | Complete for current MVP boundaries | Team review when live schemas are confirmed |
-| Live failure does not break the demo | fallback executor and source metadata | Fallback mechanism tested; live/snapshot providers pending | Live-to-snapshot-to-mock integration test |
-| Structured errors and request validation | HTTP boundary and `ApiErrorCode` | Implemented and tested | Production API smoke tests |
-| Operational observability | structured application logger | Application events implemented | CloudWatch dashboard, alarms and retention policy |
+| Stable route API | Shared contracts, validation, `RouteService` and Vercel adapter | Complete | Frontend must retain the current request/response contract |
+| Real walking alternatives | `MapboxRouteProvider`, timeout and mapping tests | Code complete | Deployment owner configures `MAPBOX_SERVER_TOKEN` and redeploys |
+| Pedestrian data | City live, Neon and packaged providers with truthful source modes | Code complete | Enable live feed as agreed; minute table is currently empty |
+| Route-to-sensor matching | `ProximitySensorMatcher` and tests | Complete | Data owner may calibrate corridor distance |
+| Explainable crowd score | Median/P95 baseline, scoring and threshold tests | Complete | Representative users validate thresholds |
+| Quiet-space candidates | Neon and packaged repositories with proximity filtering | Complete | Places owner confirms suitability/attribution |
+| Public transport access | Stable port and response field | Interface only | Places/transport owner supplies an approved source and fixtures |
+| Resilient fallback | Live/Neon/snapshot/mock chains and tests | Complete | Production smoke test records deployed modes |
+| Neon security | Migration, read-only role guidance, env-only connection and DB health | Complete | Deployment owner retains pooled read-only credentials in Vercel |
+| CI quality gate | GitHub Actions runs install and `pnpm check` | Complete | Repository admin confirms Actions is enabled |
+| Public deployment | Vercel production URL and smoke command | Deployed, latest integration unverified | Redeploy latest `main`, set env vars, run live smoke test |
+| Production CORS | `APP_ORIGIN` support | Code complete | Set exact Vercel origin in Preview/Production |
+| Accessibility/usability | Outside backend ownership | External evidence required | Frontend/QA team performs keyboard, mobile and representative-user tests |
+| Mentor acceptance | Outside repository implementation | External evidence required | Team records mentor scope approval and defect sign-off |
+| Next-hour prediction | Excluded by the current backend handoff | Not in current scope | Obtain written scope decision if original brief still requires it |
 
-## Definition of architecture ready
+## Backend acceptance commands
 
-- The monorepo installs, type-checks, tests and builds from `code/`.
-- The UI completes the planned flow without a secret token.
-- The Lambda artifact bundles for Node.js 24.
-- Every external dependency has a named port, provider result and fallback expectation.
-- Shared contracts expose per-source mode, timestamp, confidence and staleness.
-- Invalid requests return stable error codes and request IDs.
-- Missing live integrations remain visible and are not presented as complete.
+From `code/`:
 
-## Definition of live-integration ready
+```bash
+pnpm install --frozen-lockfile
+pnpm check
+pnpm smoke:production
+REQUIRE_LIVE=true pnpm smoke:production
+```
 
-- Mapbox and Melbourne providers pass saved-fixture contract tests.
-- Route-to-sensor matching has measurable proximity rules.
-- Snapshot age and staleness policies are documented and tested.
-- Quiet-space and transport sources are mentor-approved.
-- The response reports accurate source modes for mixed live and fallback data.
-- CI passes and a staging smoke test exercises the public CloudFront URL.
+The final command is the deployment gate. It must not pass by relabelling historical or mock data as live.

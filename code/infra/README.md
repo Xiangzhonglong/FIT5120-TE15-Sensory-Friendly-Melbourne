@@ -32,7 +32,7 @@ The current Vercel Function entry points are:
 | `GET` | `/api/db-health` | Confirms that the Neon database is reachable |
 | `POST` | `/api/routes` | Passes route requests to the backend application |
 
-`POST /api/routes` currently uses the backend mock composition. It must not be described as using live pedestrian or routing data until the backend integration is completed.
+`POST /api/routes` uses the configured application composition. Mapbox, City of Melbourne and Neon implementations are present, with packaged and mock fallbacks. A deployed response is live only when its `dataSources` fields report `LIVE`; deployment configuration must be verified with the production smoke test.
 
 ## Environment variables
 
@@ -44,6 +44,8 @@ Environment values must be configured through the Vercel dashboard or CLI. They 
 
 See `.env.example` for variable names only.
 
+Production also requires `MAPBOX_SERVER_TOKEN` for real routing and `APP_ORIGIN=https://calmpath-melbourne.vercel.app` for restricted CORS. Set `LIVE_DATA_ENABLED=true` only when the City live-feed policy has been approved.
+
 ## Validate before deployment
 
 From `code/`:
@@ -52,3 +54,5 @@ From `code/`:
 pnpm install --frozen-lockfile
 pnpm check
 pnpm dlx vercel@latest build --prod
+pnpm smoke:production
+REQUIRE_LIVE=true pnpm smoke:production
