@@ -20,8 +20,9 @@ describe("App", () => {
     expect(screen.getByLabelText(/destination in melbourne cbd/i)).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "Calmer via Russell Street", level: 3 })).toBeInTheDocument();
     expect(screen.getByText("Demo data")).toBeInTheDocument();
-    expect(screen.getByText("CURRENT")).toBeInTheDocument();
-    expect(screen.getByText("NEXT HOUR")).toBeInTheDocument();
+    expect(screen.getByText("DEMO ESTIMATE")).toBeInTheDocument();
+    expect(screen.queryByText("CURRENT")).not.toBeInTheDocument();
+    expect(screen.queryByText("NEXT HOUR")).not.toBeInTheDocument();
 
     expect(searchRoutesMock).toHaveBeenCalledWith({
       origin: { lat: -37.8136, lng: 144.9631 },

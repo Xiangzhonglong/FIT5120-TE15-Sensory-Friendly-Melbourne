@@ -244,7 +244,6 @@ The remaining business integrations belong to the relevant backend and data owne
 - matching candidate routes to relevant pedestrian sensors;
 - use of historical P95 baseline values;
 - Neon repositories for the relational datasets required by route scoring;
-- removal of prediction functionality that is outside the approved scope;
 - truthful fallback behaviour when a live source is unavailable.
 
 Infrastructure deployment does not need to be redesigned when these providers are completed. The updated backend can be tested in Preview and then redeployed to the same Vercel Production project.

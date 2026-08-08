@@ -48,19 +48,11 @@ export const routeSearchResponse: RouteSearchResponse = {
   routes: [calmerRoute, directRoute],
   alerts: [
     {
-      id: "live-swanston",
+      id: "crowd-swanston",
       severity: "HIGH",
       area: "Swanston Street",
-      message: "Crowd level is above your tolerance.",
+      message: "Demonstration crowd estimate is above your tolerance.",
       confidence: "HIGH"
-    },
-    {
-      id: "prediction-swanston",
-      severity: "MODERATE",
-      area: "Swanston Street",
-      message: "Swanston Street may become busier within the next hour.",
-      expectedTime: "2026-08-08T04:00:00Z",
-      confidence: "MEDIUM"
     }
   ],
   quietSpaces: [

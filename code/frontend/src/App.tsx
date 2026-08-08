@@ -178,12 +178,15 @@ export function App() {
           <div className="support-heading">
             <div>
               <div className="section-kicker">Plan with a little more certainty</div>
-              <h2>What is happening around your route</h2>
+              <h2>What the data suggests around your route</h2>
             </div>
-            <p>Alerts are possibilities based on current and historical pedestrian patterns. They are not guarantees.</p>
+            <p>Crowd estimates reflect the pedestrian source shown on each card. Historical and demonstration data are not current conditions or forecasts.</p>
           </div>
           <div className="insights-grid">
-            <AlertPanel alerts={result?.alerts ?? []} />
+            <AlertPanel
+              alerts={result?.alerts ?? []}
+              pedestrianSource={result?.dataSources.pedestrian}
+            />
             <QuietSpaces places={result?.quietSpaces ?? []} />
             <TransportAccess points={result?.transportAccess ?? []} />
           </div>

@@ -220,8 +220,9 @@ h1 em { color: var(--forest); font-weight: inherit; }
 .alert-item.alert-low { border-left-color: var(--forest); background: #eff5f1; }
 .alert-item-topline { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 7px; color: #7c7469; font-size: .57rem; }
 .alert-type { font-weight: 880; letter-spacing: .09em; }
-.alert-type.current { color: var(--red); }
-.alert-type.predicted { color: var(--amber); }
+.alert-type.live { color: var(--red); }
+.alert-type.snapshot { color: var(--amber); }
+.alert-type.mock { color: var(--forest); }
 .alert-item > strong { font-size: .8rem; }
 .alert-item > p { margin: 3px 0 0; color: var(--muted); font-size: .68rem; line-height: 1.45; }
 .insight-footnote { margin: 15px 0 0; display: flex; gap: 7px; color: #7b8783; font-size: .62rem; line-height: 1.4; }
