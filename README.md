@@ -1,109 +1,270 @@
 # CalmPath Melbourne
 
-CalmPath Melbourne is a no-login, sensory-aware walking route prototype for adults travelling through Melbourne CBD. It compares walking alternatives using pedestrian-load signals, explains each score, warns when a route exceeds a user's crowd tolerance, and identifies nearby places that may provide a lower-stimulation pause.
+CalmPath Melbourne is a public, no-login web prototype that helps adults compare walking routes through Melbourne CBD using pedestrian crowd information and nearby lower-stimulation public spaces.
 
-The project supports UN Sustainable Development Goal 11. It is currently an integration-ready foundation: the complete user flow runs with deterministic mock providers, while production Mapbox, City of Melbourne, quiet-space, transport and snapshot implementations remain explicit team handoffs.
+The application does not collect user accounts, personal information or journey histories. User preferences are used only for the current request and are not stored.
 
-> The current default composition returns `MOCK` data. Do not describe the application as live until each response reports the actual state of every source through `dataSources`.
+The project supports UN Sustainable Development Goal 11.
+
+## Current delivery status
+
+The application is publicly deployed at:
+
+<https://calmpath-melbourne.vercel.app>
+
+The current platform deployment is operational:
+
+- the React and Vite frontend is hosted on Vercel;
+- `/api/*` requests are handled by Vercel Functions;
+- Functions run in the Sydney region (`syd1`);
+- Neon PostgreSQL stores cleaned relational open data;
+- Vercel connects to Neon using the read-only `calmpath_app` role;
+- `/api/health` confirms the API runtime;
+- `/api/db-health` confirms database connectivity.
+
+The current `/api/routes` response still uses deterministic mock route providers. It must not be presented as live routing or live crowd information until the backend team connects approved routing and pedestrian data providers.
+
+> Source status must always be reported truthfully. Mock, simulated, historical and live data must not be presented as equivalent.
+
+## Product scope
+
+The current project focuses on:
+
+- comparing walking route alternatives;
+- calculating explainable pedestrian crowd scores;
+- allowing users to select a crowd-tolerance preference;
+- identifying nearby libraries, parks and public spaces that may offer a lower-stimulation pause;
+- displaying the source, confidence and freshness of available data.
+
+The following are not part of the current delivery scope:
+
+- user registration or login;
+- collection of personal information;
+- storage of user journeys or preferences;
+- AI-powered sensory navigation;
+- next-hour crowd prediction;
+- claims that a public place is guaranteed to be quiet.
+
+Some earlier mock fixtures may still contain prediction-shaped output from the original prototype. Those fields are not part of the approved product scope and should be removed when the backend business integration is completed.
 
 ## Repository structure
 
 ```text
 .
 ├── code/
-│   ├── frontend/                 # React, TypeScript and Vite single-page application
-│   ├── backend/                  # Lambda-compatible API and integration architecture
+│   ├── api/                         # Vercel Function entry points
+│   │   ├── health.ts
+│   │   ├── db-health.ts
+│   │   └── routes.ts
+│   ├── frontend/                    # React, TypeScript and Vite web application
+│   ├── backend/                     # API services, ports and provider adapters
 │   │   └── src/
-│   │       ├── adapters/         # Mock providers and reusable fallback executor
-│   │       ├── ports/            # Interfaces for team-owned integrations
-│   │       ├── services/         # Route orchestration, scoring and prediction
-│   │       ├── application.ts    # Composition root
-│   │       └── http.ts           # Validation and HTTP boundary
-│   ├── packages/contracts/       # Shared browser/API contracts
-│   ├── data/                     # Versioned baseline and snapshot boundaries
-│   ├── scripts/                  # Offline preprocessing jobs
-│   └── infra/                    # AWS SAM and CloudFormation foundation
-└── documents/
-    ├── source/                   # Original PDF and DOCX requirement material
-    └── project/                  # Architecture, decisions, handoffs and traceability
+│   │       ├── adapters/            # Mock, Neon and future live providers
+│   │       ├── ports/               # Provider interfaces
+│   │       ├── services/            # Route orchestration and scoring
+│   │       ├── application.ts       # Backend composition
+│   │       ├── http.ts              # Internal HTTP boundary
+│   │       └── vercel.ts            # Vercel request adapter
+│   ├── packages/contracts/          # Shared frontend and backend contracts
+│   ├── data/                        # Cleaned datasets and versioned data assets
+│   ├── database/
+│   │   ├── migrations/              # Neon PostgreSQL schema
+│   │   └── security/                # Application-role permissions
+│   ├── infra/                       # Current deployment guide and legacy template
+│   ├── vercel.json                  # Vercel build and region configuration
+│   ├── pnpm-workspace.yaml
+│   └── package.json
+├── documents/                       # Project documents and architecture records
+├── CONTRIBUTING.md
+└── README.md
 ```
 
-## Architecture at a glance
+## Current cloud architecture
 
 ```mermaid
-flowchart LR
-    Browser --> CloudFront
-    CloudFront -->|static files| S3
-    CloudFront -->|/api/*| APIGateway
-    APIGateway --> Lambda
-    Lambda --> RouteService
-    RouteService --> RouteProvider
-    RouteService --> PedestrianProvider
-    RouteService --> SensorMatcher
-    RouteService --> QuietSpaceRepository
-    RouteService --> TransportRepository
+flowchart TD
+    Browser["Public web browser"] --> Vercel["Vercel HTTPS and CDN"]
+    Vercel --> Frontend["React and Vite frontend"]
+    Vercel --> Functions["Vercel Functions under /api"]
+    Functions --> Backend["Backend services and providers"]
+    Backend --> Neon["Neon PostgreSQL"]
+    Backend --> External["Approved routing and open-data APIs"]
 ```
 
-The backend follows a ports-and-adapters design. `RouteService` depends only on interfaces in `backend/src/ports`; it does not know Mapbox URLs, City of Melbourne payloads or snapshot storage details. The current composition supplies deterministic mock adapters. Team members can implement live or snapshot adapters without editing the orchestration service.
+Vercel hosts the frontend and API in one project. A separate API Gateway is not required.
 
-The fallback executor supports the intended order:
+The backend uses ports and adapters. Business services depend on interfaces rather than directly depending on Vercel, Neon, Mapbox or City of Melbourne response formats.
 
-```text
-LIVE provider -> versioned SNAPSHOT provider -> deterministic MOCK provider
-```
+This allows backend providers to be updated and redeployed without rebuilding the cloud architecture.
 
-Every provider returns source name, mode, timestamp, confidence, staleness and an optional fallback reason. A response may therefore be `MIXED` when different boundaries use different source modes.
+## Current API endpoints
 
-## Prerequisites
+| Method | Path | Current purpose |
+| --- | --- | --- |
+| `GET` | `/api/health` | Confirms that the Vercel API runtime is available |
+| `GET` | `/api/db-health` | Confirms that Neon PostgreSQL is reachable |
+| `POST` | `/api/routes` | Validates a route request and calls the backend route flow |
 
-- Node.js 24 or later
-- pnpm 11.9.0 or a compatible pnpm 11 release
+`POST /api/routes` currently returns mock route results. Future backend integrations can continue using the same endpoint; a separate gateway is not required for each internal provider or calculation.
 
-## Run locally
+Additional public endpoints should only be introduced when they represent a separate client-facing operation.
+
+## Data architecture
+
+Only cleaned open data and application reference data are stored in the cloud database. The database does not contain user data.
+
+The current Neon schema contains:
+
+| Table | Purpose | Current status |
+| --- | --- | --- |
+| `pedestrian_sensor` | Sensor identifiers, labels, status and coordinates | Populated with cleaned sensor data |
+| `pedestrian_count_hourly` | Historical hourly pedestrian counts | Populated with cleaned historical data |
+| `pedestrian_count_minute` | Optional near-real-time minute observations | Currently empty |
+| `quiet_space_candidate` | Libraries, parks and public-space candidates | Populated with cleaned candidate data |
+
+The historical data supports comparison with normal crowd patterns. Near-real-time information may later be:
+
+- requested directly from an approved external API;
+- stored as a small simulated test dataset;
+- stored as only the latest record for each sensor; or
+- retained for a limited period.
+
+Minute-level records must not be appended indefinitely without a retention policy.
+
+### Baseline data
+
+`baseline.json` contains historical median and P95 values by sensor, weekday and hour.
+
+It is a versioned backend data asset rather than a relational table. The file is not automatically used by Vercel merely because it exists in the repository. A backend provider must explicitly import or load it before it affects route scoring.
+
+Historical baseline values must not be described as current live counts.
+
+## Local development
+
+### Prerequisites
+
+- Node.js 24.x
+- pnpm 11.9.0
+
+From `code/`:
 
 ```bash
-cd code
-pnpm install
+pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Open `http://localhost:5173`. Vite forwards `/api` requests to the local backend at `http://localhost:3001`.
+Open:
 
-No token is required for the default mock flow. To enable only the browser map renderer, copy `code/.env.example` to `code/frontend/.env.local` and add a URL- and scope-restricted `VITE_MAPBOX_TOKEN`. Never commit the resulting environment file.
+<http://localhost:5173>
 
-## API foundation
+The Vite development server forwards `/api` requests to the local backend at `http://localhost:3001`.
 
-| Method | Path | Purpose |
+The default local route flow uses mock providers and does not require external credentials.
+
+## Environment variables
+
+Copy variable names from `code/.env.example`. Never commit real values.
+
+Important variables include:
+
+| Variable | Exposure | Purpose |
 | --- | --- | --- |
-| `GET` | `/api/health` | Service health |
-| `POST` | `/api/routes` | Route comparison, scoring, alerts and nearby resources |
-| `GET` | `/api/crowd` | Current crowd boundary for diagnostics |
-| `GET` | `/api/quiet-spaces` | Quiet-space repository boundary |
-| `GET` | `/api/alerts` | Current and predicted alert boundary |
+| `DATABASE_URL` | Server only | Pooled Neon connection string for the read-only application role |
+| `VITE_API_BASE_URL` | Browser | API base path; normally `/api` |
+| `VITE_MAPBOX_TOKEN` | Browser | Optional URL- and scope-restricted browser map token |
+| `MAPBOX_SERVER_TOKEN` | Server only | Optional future server-side routing token |
+| `MELBOURNE_OPEN_DATA_BASE_URL` | Server only | Approved City of Melbourne open-data base URL |
 
-`POST /api/routes` validates JSON content, payload size, coordinates, Melbourne CBD destination bounds, destination label and crowd threshold. Stable error codes and request IDs are returned to clients.
+Variables without the `VITE_` prefix are not intended for browser code.
+
+`DATABASE_URL` is configured as Sensitive in the Vercel Preview and Production environments.
 
 ## Quality checks
 
+From `code/`:
+
 ```bash
-cd code
 pnpm check
+pnpm dlx vercel@latest build --prod
 ```
 
-This runs TypeScript checks, automated tests, and production builds for all workspaces. Run it before every pull request.
+`pnpm check` runs:
 
-## Team integration handoffs
+- TypeScript checks;
+- backend tests;
+- frontend tests;
+- backend build;
+- frontend production build.
 
-The foundation intentionally leaves these implementations to other team members:
+Run these checks before merging deployment or application changes.
 
-- Mapbox geocoding and walking alternatives implementing `RouteProvider`;
-- City of Melbourne current and historical pedestrian data implementing `PedestrianProvider`;
-- geospatial route-to-sensor matching implementing `SensorMatcher`;
-- mentor-approved facility/open-space data implementing `QuietSpaceRepository`;
-- Transport Victoria access data implementing `TransportRepository`;
-- versioned S3 fallback data implementing `SnapshotRepository`.
+## Vercel deployment
 
-Start with [the backend integration guide](code/backend/README.md) and [the project integration guide](documents/project/integration-guide.md). Do not import live provider code directly into `RouteService`; register implementations in `backend/src/application.ts` instead.
+The Vercel project is configured from `code/vercel.json`.
+
+Current settings:
+
+- framework: Vite;
+- install command: `pnpm install --frozen-lockfile`;
+- build command: `pnpm --filter @sensory-melbourne/web build`;
+- output directory: `frontend/dist`;
+- Function region: Sydney (`syd1`).
+
+Create a Preview deployment from `code/`:
+
+```bash
+pnpm dlx vercel@latest
+```
+
+Deploy to Production:
+
+```bash
+pnpm dlx vercel@latest --prod
+```
+
+After deployment, verify:
+
+```bash
+curl -i https://calmpath-melbourne.vercel.app/api/health
+curl -i https://calmpath-melbourne.vercel.app/api/db-health
+```
+
+Both endpoints should return HTTP `200`.
+
+The project currently uses manual Vercel CLI deployment. Git-based automatic deployment may be connected later by the team.
+
+## Backend integration handoffs
+
+The remaining business integrations belong to the relevant backend and data owners:
+
+- an approved walking-route provider;
+- current or near-real-time pedestrian data;
+- matching candidate routes to relevant pedestrian sensors;
+- use of historical P95 baseline values;
+- Neon repositories for the relational datasets required by route scoring;
+- removal of prediction functionality that is outside the approved scope;
+- truthful fallback behaviour when a live source is unavailable.
+
+Infrastructure deployment does not need to be redesigned when these providers are completed. The updated backend can be tested in Preview and then redeployed to the same Vercel Production project.
+
+## Security
+
+The public application does not require a firewall or user authentication.
+
+Security controls include:
+
+- HTTPS supplied by Vercel;
+- server-side request validation;
+- maximum request-body size;
+- Melbourne CBD coordinate boundaries;
+- Vercel Sensitive environment variables;
+- a read-only Neon application role;
+- no committed credentials or connection strings;
+- no storage of user journeys or preferences;
+- no logging of tokens, credentials or precise journey histories;
+- truthful labelling of mock, historical, simulated and live data.
+
+The Neon owner role is used only for schema management and controlled data imports. Vercel Functions use the separate `calmpath_app` role with the minimum required permissions.
 
 ## Documentation
 
@@ -114,11 +275,11 @@ Start with [the backend integration guide](code/backend/README.md) and [the proj
 - [Architecture decisions](documents/project/decisions/README.md)
 - [Backend integration guide](code/backend/README.md)
 - [Shared contracts guide](code/packages/contracts/README.md)
-- [AWS deployment foundation](code/infra/README.md)
+- [Vercel and Neon deployment guide](code/infra/README.md)
 - [Contribution and branch workflow](CONTRIBUTING.md)
 
-## Security and repository hygiene
+## Legacy deployment material
 
-Dependencies, builds, environment files, coverage output and temporary files are excluded by `.gitignore`. Before pushing, confirm that the repository contains no Mapbox tokens, AWS credentials, `.env` files, `node_modules` or `dist` directories.
+`code/infra/template.yaml` records the original AWS deployment design. It is not used by the current Vercel Production deployment.
 
-Use browser-safe Mapbox tokens only in the frontend. Server tokens belong in the approved AWS secret mechanism. Application logs record request IDs, durations, source modes and error codes, but must not record tokens or precise user journey histories.
+The active application does not depend on S3, CloudFront, API Gateway, Lambda, RDS, ACM or CloudFormation.
