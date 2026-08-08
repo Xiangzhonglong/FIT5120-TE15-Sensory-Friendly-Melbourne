@@ -34,7 +34,11 @@ export function QuietSpaces({ places, selectedPlaceId, onSelectPlace, onRouteToP
               onClick={() => onSelectPlace(place)}
             >
               <span className="quiet-icon" aria-hidden="true">{placeSymbols[place.type]}</span>
-              <span className="quiet-place-copy"><strong>{place.name}</strong><small>{place.type.replace("_", " ").toLowerCase()} · {place.distanceM} m from route</small></span>
+              <span className="quiet-place-copy">
+                <strong>{place.name}</strong>
+                <small>{place.type.replace("_", " ").toLowerCase()} · {place.distanceM} m from route</small>
+                <small className="quiet-place-source">Source: {place.sourceLabel}</small>
+              </span>
               <span className="place-arrow" aria-hidden="true">◎</span>
             </button>
             <button

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Coordinates, QuietSpace, RouteSearchResponse } from "@sensory-melbourne/contracts";
+import type { ApiErrorCode, Coordinates, QuietSpace, RouteSearchResponse } from "@sensory-melbourne/contracts";
 import { AlertPanel } from "./components/AlertPanel";
 import { DataSources } from "./components/DataSources";
 import { MapPanel } from "./components/MapPanel";
@@ -7,7 +7,8 @@ import { QuietSpaces } from "./components/QuietSpaces";
 import { RouteCard } from "./components/RouteCard";
 import { SearchPanel } from "./components/SearchPanel";
 import { TransportAccess } from "./components/TransportAccess";
-import { searchRoutes } from "./services/api";
+import { searchRoutes, type RouteSearchError } from "./services/api";
+import { formatMelbourneDateTime } from "./services/dateTime";
 import { geocodeLocation } from "./services/geocoding";
 import {
   DEFAULT_DESTINATION,
@@ -26,6 +27,13 @@ type SearchOverrides = {
   destination?: LocationDraft;
 };
 
+type RouteErrorView = {
+  title: string;
+  message: string;
+  retryable: boolean;
+  requestId?: string;
+};
+
 function locationDraft(choice: LocationChoice): LocationDraft {
   return { label: choice.label, coordinates: choice.coordinates };
 }
@@ -37,6 +45,49 @@ const dataModeLabels = {
   MIXED: "Mixed sources"
 } as const;
 
+const routeInputErrorCodes = new Set<ApiErrorCode>([
+  "INVALID_JSON",
+  "INVALID_REQUEST",
+  "INVALID_CONTENT_TYPE",
+  "PAYLOAD_TOO_LARGE",
+  "INVALID_COORDINATES",
+  "DESTINATION_OUTSIDE_CBD",
+  "INVALID_CROWD_THRESHOLD"
+]);
+
+function isRouteSearchError(reason: unknown): reason is RouteSearchError {
+  if (!(reason instanceof Error)) return false;
+  const candidate = reason as Partial<RouteSearchError>;
+  return typeof candidate.code === "string" && typeof candidate.status === "number";
+}
+
+function presentRouteError(reason: unknown): RouteErrorView {
+  if (!isRouteSearchError(reason)) {
+    return {
+      title: "We could not check routes.",
+      message: reason instanceof Error ? reason.message : "Route search failed.",
+      retryable: true
+    };
+  }
+
+  if (routeInputErrorCodes.has(reason.code)) {
+    return {
+      title: "Check your route details.",
+      message: reason.message,
+      retryable: false,
+      ...(reason.requestId ? { requestId: reason.requestId } : {})
+    };
+  }
+
+  const temporaryFailure = reason.code === "UPSTREAM_TIMEOUT" || reason.code === "UPSTREAM_UNAVAILABLE";
+  return {
+    title: temporaryFailure ? "Route services are temporarily unavailable." : "We could not check routes.",
+    message: reason.message,
+    retryable: true,
+    ...(reason.requestId ? { requestId: reason.requestId } : {})
+  };
+}
+
 export function App() {
   const [origin, setOrigin] = useState<LocationDraft>(() => locationDraft(DEFAULT_ORIGIN));
   const [destination, setDestination] = useState<LocationDraft>(() => locationDraft(DEFAULT_DESTINATION));
@@ -46,7 +97,7 @@ export function App() {
   const [selectedQuietSpace, setSelectedQuietSpace] = useState<QuietSpace>();
   const [busy, setBusy] = useState(false);
   const [locating, setLocating] = useState(false);
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<RouteErrorView>();
   const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN || undefined;
 
   const updateLocation = useCallback((value: string, setter: (draft: LocationDraft) => void) => {
@@ -57,7 +108,11 @@ export function App() {
   const useCurrentLocation = useCallback(() => {
     setError(undefined);
     if (!navigator.geolocation) {
-      setError("Current location is not supported by this browser. Enter an address instead.");
+      setError({
+        title: "Current location is unavailable.",
+        message: "Current location is not supported by this browser. Enter an address instead.",
+        retryable: false
+      });
       return;
     }
     setLocating(true);
@@ -70,7 +125,11 @@ export function App() {
         setLocating(false);
       },
       () => {
-        setError("We could not access your current location. Check browser permission or enter an address.");
+        setError({
+          title: "Current location is unavailable.",
+          message: "We could not access your current location. Check browser permission or enter an address.",
+          retryable: false
+        });
         setLocating(false);
       },
       { enableHighAccuracy: false, timeout: 10_000, maximumAge: 60_000 }
@@ -103,7 +162,7 @@ export function App() {
         : undefined);
       setSelectedRouteId(response.routes.find((route) => route.recommended)?.id ?? response.routes[0]?.id);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Route search failed.");
+      setError(presentRouteError(reason));
     } finally {
       setBusy(false);
     }
@@ -132,9 +191,7 @@ export function App() {
   }, [runSearch]);
 
   const dataMode = result ? dataModeLabels[result.mode] : "Checking data";
-  const dataTimestamp = result
-    ? new Intl.DateTimeFormat("en-AU", { hour: "numeric", minute: "2-digit" }).format(new Date(result.dataTimestamp))
-    : undefined;
+  const dataTimestamp = result ? formatMelbourneDateTime(result.dataTimestamp) : undefined;
 
   return (
     <>
@@ -230,8 +287,12 @@ export function App() {
 
         {error && (
           <div className="error-state" role="alert">
-            <div><strong>We could not check routes.</strong><span>{error}</span></div>
-            <button type="button" onClick={() => void runSearch()}>Try again</button>
+            <div>
+              <strong>{error.title}</strong>
+              <span>{error.message}</span>
+              {error.requestId && <small>Reference: {error.requestId}</small>}
+            </div>
+            {error.retryable && <button type="button" onClick={() => void runSearch()}>Try again</button>}
           </div>
         )}
 

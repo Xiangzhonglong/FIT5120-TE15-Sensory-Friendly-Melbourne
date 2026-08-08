@@ -22,6 +22,7 @@ describe("QuietSpaces", () => {
 
     expect(screen.getByText("State Library Victoria")).toBeVisible();
     expect(screen.getByText(/library · 260 m from route/i)).toBeVisible();
+    expect(screen.getByText(/Source: City of Melbourne Open Data/i)).toBeVisible();
     const hideButton = screen.getByRole("button", { name: /hide nearby places/i });
     expect(hideButton).toHaveAttribute("aria-expanded", "true");
 
