@@ -7,6 +7,7 @@ CalmPath is a public, no-login React application deployed with Vercel Functions 
 ```mermaid
 flowchart LR
     U[Browser] --> V[Vercel frontend and API]
+    U --> MBP[Mapbox map and temporary geocoding]
     V --> RS[RouteService]
     RS --> RP[RouteProvider]
     RS --> PP[PedestrianProvider]
@@ -32,12 +33,13 @@ flowchart LR
 
 ## Route request flow
 
-1. `POST /api/routes` validates the existing request contract.
-2. Mapbox supplies walking alternatives when `MAPBOX_SERVER_TOKEN` is configured.
-3. The pedestrian chain tries enabled City live data, Neon data, packaged snapshots and finally mock data.
-4. Sensors are matched to route geometry by proximity and normalised against historical P95 values.
-5. Neon supplies quiet-space candidates, with packaged and mock fallbacks.
-6. The response preserves the existing shape and truthfully labels every source `LIVE`, `SNAPSHOT` or `MOCK`.
+1. The frontend uses suggested coordinates directly or resolves user-entered text through temporary Mapbox geocoding with the restricted browser token. Browser location is requested only after a user action.
+2. `POST /api/routes` validates the existing coordinate-based request contract and requires the destination to remain inside Melbourne CBD.
+3. Mapbox supplies walking alternatives when `MAPBOX_SERVER_TOKEN` is configured.
+4. The pedestrian chain tries enabled City live data, Neon data, packaged snapshots and finally mock data.
+5. Sensors are matched to route geometry by proximity and normalised against historical P95 values.
+6. Neon supplies quiet-space candidates, with packaged and mock fallbacks.
+7. The response preserves the existing shape and truthfully labels every source `LIVE`, `SNAPSHOT` or `MOCK`.
 
 Provider order is intentionally resilient:
 
@@ -50,6 +52,7 @@ Missing minute-level rows must never be labelled real time. Hourly Neon observat
 ## Environment and security
 
 - `MAPBOX_SERVER_TOKEN` is server-only and is never logged or exposed to Vite.
+- `VITE_MAPBOX_TOKEN` is a URL- and scope-restricted public token used only for map rendering and temporary address lookup.
 - `DATABASE_URL` is read by `@neondatabase/serverless`; no connection string is committed.
 - `LIVE_DATA_ENABLED=true` enables the City of Melbourne past-hour adapter.
 - `APP_ORIGIN` restricts production CORS to the public application origin.

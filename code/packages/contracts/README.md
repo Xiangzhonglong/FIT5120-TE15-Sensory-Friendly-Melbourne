@@ -11,7 +11,7 @@ The architecture/integration owner reviews contract changes. A change must be co
 - coordinates and GeoJSON line geometry;
 - route-search request and response;
 - sensory level, score explanation and confidence;
-- current and predicted alerts;
+- source-labelled crowd alerts without future prediction;
 - quiet-space candidates;
 - public transport access points;
 - per-source mode, timestamp, confidence, staleness and fallback reason;

@@ -40,7 +40,6 @@ export type SensoryAlert = {
   severity: SensoryLevel;
   area: string;
   message: string;
-  expectedTime?: string;
   confidence: Confidence;
 };
 

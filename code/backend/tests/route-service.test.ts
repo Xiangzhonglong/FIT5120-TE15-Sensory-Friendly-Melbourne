@@ -33,4 +33,13 @@ describe("route service", () => {
     expect(result.transportAccess).toEqual([]);
     expect(result.dataTimestamp).toBe(now.toISOString());
   });
+
+  it("labels non-live crowd alerts as demonstration estimates", async () => {
+    const application = createApplication({ logger: noopLogger });
+    const result = await application.routeService.search(request);
+
+    expect(result.alerts.length).toBeGreaterThan(0);
+    expect(result.alerts[0]?.id).toMatch(/^crowd-/);
+    expect(result.alerts[0]?.message).toMatch(/^Demonstration crowd estimate/);
+  });
 });
