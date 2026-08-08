@@ -2,7 +2,7 @@
 
 The backend is a TypeScript application deployed through Vercel Functions. It follows a ports-and-adapters structure so routing, pedestrian data and quiet-space providers can be implemented independently from the deployment platform.
 
-The current application composition uses deterministic mock providers. The deployed `/api/routes` endpoint must not be described as live until the backend team connects approved routing and pedestrian data providers.
+The production composition uses ordered providers with truthful fallback metadata. Mapbox supplies live walking routes when a server token is configured; the City of Melbourne past-hour feed supplies live pedestrian counts when enabled; Neon and packaged snapshots provide resilient historical fallbacks. Deterministic mocks remain the final development fallback only.
 
 ## Current deployment boundaries
 
@@ -64,17 +64,15 @@ The Neon database currently contains cleaned relational data for:
 - historical hourly pedestrian counts;
 - quiet-space candidates.
 
-The `pedestrian_count_minute` table currently contains no near-real-time records.
+The `pedestrian_count_minute` table may be empty. When `LIVE_DATA_ENABLED=true`, the backend requests the official City of Melbourne rolling past-hour feed directly. If that request is unavailable or stale, it falls back through Neon historical data, the packaged baseline snapshot, and finally deterministic mocks.
 
-`/api/db-health` confirms database connectivity only. The current `/api/routes` business flow still uses mock providers and does not yet use Neon data to calculate live route scores.
-
-Static assets such as `baseline.json` may be loaded by a future backend provider when required. They are not automatically used merely because they exist in the repository.
+Quiet-space candidates are loaded from Neon when available and otherwise from the packaged snapshot. Both providers calculate distance to returned route geometry. Transport access remains empty until an approved transport dataset is delivered; the response reports this boundary as `MOCK` rather than inventing records.
 
 ## Product scope
 
 The current project scope does not include AI-powered sensory navigation or next-hour crowd prediction.
 
-Until the real backend integration is completed:
+For every provider response:
 
 - responses must continue to report their source mode truthfully;
 - mock data must be labelled as `MOCK`;
@@ -103,7 +101,19 @@ Backend integration owners should:
 4. Transform external payloads into shared backend domain types.
 5. Return truthful source metadata.
 6. Add fixture-based tests that do not require committed credentials.
-7. Register the provider in `application.ts`.
+7. Register the provider in `createConfiguredApplication()` in `application.ts`.
+
+## Provider configuration
+
+| Variable | Effect |
+| --- | --- |
+| `MAPBOX_SERVER_TOKEN` | Enables live Mapbox walking-route alternatives |
+| `LIVE_DATA_ENABLED=true` | Enables the official City of Melbourne past-hour feed |
+| `MELBOURNE_OPEN_DATA_BASE_URL` | Overrides the official API root |
+| `DATABASE_URL` | Enables Neon pedestrian and quiet-space fallbacks |
+| `APP_ORIGIN` | Restricts the API CORS origin; defaults to `*` for local development |
+
+No credential is required for packaged snapshot or mock fallbacks.
 
 Example:
 

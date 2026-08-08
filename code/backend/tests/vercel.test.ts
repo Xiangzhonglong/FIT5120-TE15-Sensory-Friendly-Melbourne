@@ -25,7 +25,7 @@ describe("Vercel Function adapter", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("content-type")).toContain("application/json");
-    expect(payload.mode).toBe("MOCK");
+    expect(payload.mode).toBe("MIXED");
     expect(payload.routes).toHaveLength(3);
   });
 });

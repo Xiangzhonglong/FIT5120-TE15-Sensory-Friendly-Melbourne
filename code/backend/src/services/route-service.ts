@@ -13,7 +13,6 @@ import type { RouteProvider } from "../ports/route-provider.js";
 import type { SensorMatcher } from "../ports/sensor-matcher.js";
 import type { TransportRepository } from "../ports/transport-repository.js";
 import type { RouteSearchContext } from "../domain.js";
-import { createPredictedAlert } from "./prediction.js";
 import { classifySensoryLevel, explainScore, routeCrowdScore } from "./scoring.js";
 
 export type RouteServiceDependencies = {
@@ -59,9 +58,11 @@ export class RouteService {
       this.dependencies.transportRepository.findNearRoutes(routeResult.data)
     ]);
 
+    const matchedSensors = new Map<string, ReturnType<SensorMatcher["matchRoute"]>>();
     const routes = routeResult.data
       .map<RouteOption>((candidate) => {
         const routeSensors = this.dependencies.sensorMatcher.matchRoute(candidate, pedestrianResult.data);
+        matchedSensors.set(candidate.id, routeSensors);
         const sensoryScore = routeCrowdScore(routeSensors);
         return {
           id: candidate.id,
@@ -81,8 +82,13 @@ export class RouteService {
     const withinThreshold = routes.find((route) => route.sensoryScore <= threshold) ?? routes[0];
     if (withinThreshold) withinThreshold.recommended = true;
 
-    const alerts: SensoryAlert[] = pedestrianResult.data
+    const relevantSensors = Array.from(new Map(
+      Array.from(matchedSensors.values()).flat().map((sensor) => [sensor.id, sensor])
+    ).values());
+    const alerts: SensoryAlert[] = relevantSensors
       .filter((sensor) => sensor.currentCount / sensor.historicalP95 > threshold)
+      .sort((a, b) => b.currentCount / b.historicalP95 - a.currentCount / a.historicalP95)
+      .slice(0, 8)
       .map((sensor) => ({
         id: `live-${sensor.id}`,
         severity: classifySensoryLevel(sensor.currentCount / sensor.historicalP95),
@@ -92,11 +98,6 @@ export class RouteService {
       }));
 
     const generatedAt = this.now();
-    const firstSensor = pedestrianResult.data[0];
-    if (firstSensor) {
-      const prediction = createPredictedAlert(firstSensor, threshold, generatedAt);
-      if (prediction) alerts.push(prediction);
-    }
 
     const dataSources = {
       routing: routeResult.status,

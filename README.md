@@ -22,7 +22,7 @@ The current platform deployment is operational:
 - `/api/health` confirms the API runtime;
 - `/api/db-health` confirms database connectivity.
 
-The current `/api/routes` response still uses deterministic mock route providers. It must not be presented as live routing or live crowd information until the backend team connects approved routing and pedestrian data providers.
+The `/api/routes` flow supports live Mapbox walking routes and the official City of Melbourne rolling past-hour pedestrian feed. Neon, packaged snapshots and deterministic mocks are ordered fallbacks, and every response reports the source mode actually used.
 
 > Source status must always be reported truthfully. Mock, simulated, historical and live data must not be presented as equivalent.
 
@@ -45,7 +45,7 @@ The following are not part of the current delivery scope:
 - next-hour crowd prediction;
 - claims that a public place is guaranteed to be quiet.
 
-Some earlier mock fixtures may still contain prediction-shaped output from the original prototype. Those fields are not part of the approved product scope and should be removed when the backend business integration is completed.
+The backend produces current crowd alerts only. It does not generate next-hour predictions.
 
 ## Repository structure
 
@@ -103,9 +103,9 @@ This allows backend providers to be updated and redeployed without rebuilding th
 | --- | --- | --- |
 | `GET` | `/api/health` | Confirms that the Vercel API runtime is available |
 | `GET` | `/api/db-health` | Confirms that Neon PostgreSQL is reachable |
-| `POST` | `/api/routes` | Validates a route request and calls the backend route flow |
+| `POST` | `/api/routes` | Returns scored route alternatives, current alerts and nearby quiet-space candidates |
 
-`POST /api/routes` currently returns mock route results. Future backend integrations can continue using the same endpoint; a separate gateway is not required for each internal provider or calculation.
+`POST /api/routes` reports `LIVE`, `SNAPSHOT`, `MOCK` or `MIXED` according to the providers used for that request. A separate gateway is not required for each internal provider or calculation.
 
 Additional public endpoints should only be introduced when they represent a separate client-facing operation.
 
@@ -122,7 +122,7 @@ The current Neon schema contains:
 | `pedestrian_count_minute` | Optional near-real-time minute observations | Currently empty |
 | `quiet_space_candidate` | Libraries, parks and public-space candidates | Populated with cleaned candidate data |
 
-The historical data supports comparison with normal crowd patterns. Near-real-time information may later be:
+The historical data supports comparison with normal crowd patterns. Near-real-time information is requested directly from the approved City of Melbourne API when live data is enabled. It may alternatively be:
 
 - requested directly from an approved external API;
 - stored as a small simulated test dataset;
@@ -159,7 +159,7 @@ Open:
 
 The Vite development server forwards `/api` requests to the local backend at `http://localhost:3001`.
 
-The default local route flow uses mock providers and does not require external credentials.
+The default local route flow uses packaged snapshots and deterministic route fallback, so it does not require external credentials.
 
 ## Environment variables
 
@@ -172,8 +172,10 @@ Important variables include:
 | `DATABASE_URL` | Server only | Pooled Neon connection string for the read-only application role |
 | `VITE_API_BASE_URL` | Browser | API base path; normally `/api` |
 | `VITE_MAPBOX_TOKEN` | Browser | Optional URL- and scope-restricted browser map token |
-| `MAPBOX_SERVER_TOKEN` | Server only | Optional future server-side routing token |
+| `MAPBOX_SERVER_TOKEN` | Server only | Enables live Mapbox walking-route alternatives |
 | `MELBOURNE_OPEN_DATA_BASE_URL` | Server only | Approved City of Melbourne open-data base URL |
+| `LIVE_DATA_ENABLED` | Server only | Set to `true` to query current City pedestrian counts |
+| `APP_ORIGIN` | Server only | Allowed browser origin for CORS |
 
 Variables without the `VITE_` prefix are not intended for browser code.
 

@@ -425,6 +425,27 @@ def build_quiet_snapshot(rows: list[dict]) -> dict:
     }
 
 
+def build_pedestrian_sensor_snapshot(rows: list[dict]) -> dict:
+    return {
+        "schemaVersion": 1,
+        "generatedAt": datetime.now(MELBOURNE).isoformat(),
+        "source": "City of Melbourne pedestrian sensor locations",
+        "sourceDatasetId": DATASETS["sensors"],
+        "sensors": [
+            {
+                "id": str(row["location_id"]),
+                "name": row["sensor_description"],
+                "location": {
+                    "lat": row["latitude"],
+                    "lng": row["longitude"],
+                },
+            }
+            for row in rows
+            if row["status"] == "A"
+        ],
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", default="cleaned_output")
@@ -500,6 +521,10 @@ def main() -> int:
     )
     (out / "quiet-spaces-snapshot.json").write_text(
         json.dumps(build_quiet_snapshot(quiet), ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    (out / "pedestrian-sensors-snapshot.json").write_text(
+        json.dumps(build_pedestrian_sensor_snapshot(sensors), ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     report = {
