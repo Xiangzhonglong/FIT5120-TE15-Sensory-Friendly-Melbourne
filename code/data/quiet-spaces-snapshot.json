@@ -1,7 +1,452 @@
 {
   "schemaVersion": 1,
-  "generatedAt": null,
-  "source": "To be confirmed with mentors before production use",
-  "status": "curated-demo-placeholder",
-  "features": []
+  "generatedAt": "2026-08-08T00:55:13.518754+10:00",
+  "source": "City of Melbourne Open Data",
+  "sourceDatasetIds": [
+    "landmarks-and-places-of-interest-including-schools-theatres-health-services-spor",
+    "business-establishments-with-address-and-industry-classification"
+  ],
+  "status": "generated-open-data-candidates",
+  "features": [
+    {
+      "id": "quiet-38fc32c3365c",
+      "name": "City Library",
+      "type": "LIBRARY",
+      "location": {
+        "lat": -37.81706291,
+        "lng": 144.96590277
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-05c74849d9bc",
+      "name": "East Melbourne Library",
+      "type": "LIBRARY",
+      "location": {
+        "lat": -37.8150637,
+        "lng": 144.98638719
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-878fc009b62c",
+      "name": "Kathleen Syme Library and Community Centre",
+      "type": "LIBRARY",
+      "location": {
+        "lat": -37.7987209,
+        "lng": 144.96525842
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-50816fa8ad44",
+      "name": "Library at the Dock",
+      "type": "LIBRARY",
+      "location": {
+        "lat": -37.82003426,
+        "lng": 144.94053454
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-4381b32c9207",
+      "name": "narrm ngarrgu Library and Family Services",
+      "type": "LIBRARY",
+      "location": {
+        "lat": -37.80788769,
+        "lng": 144.95846132
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-598defefca95",
+      "name": "North Melbourne Library",
+      "type": "LIBRARY",
+      "location": {
+        "lat": -37.80358729,
+        "lng": 144.94986055
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-0bebc9eee9e8",
+      "name": "Southbank Library",
+      "type": "LIBRARY",
+      "location": {
+        "lat": -37.82577603,
+        "lng": 144.96123726
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-b27667c5fa2f",
+      "name": "State Library Victoria",
+      "type": "LIBRARY",
+      "location": {
+        "lat": -37.80976881,
+        "lng": 144.96530602
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-767c023b1e12",
+      "name": "Alexandra Gardens",
+      "type": "PARK",
+      "location": {
+        "lat": -37.82060514,
+        "lng": 144.97179607
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-7d74c97906d9",
+      "name": "Batman Park",
+      "type": "PARK",
+      "location": {
+        "lat": -37.82184609,
+        "lng": 144.95666581
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-c8019c40ee39",
+      "name": "Carlton Gardens North",
+      "type": "PARK",
+      "location": {
+        "lat": -37.80176908,
+        "lng": 144.97199755
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-56e8428e0582",
+      "name": "Carlton Gardens South",
+      "type": "PARK",
+      "location": {
+        "lat": -37.80606846,
+        "lng": 144.97126648
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-9a8be97578f2",
+      "name": "Docklands Park",
+      "type": "PARK",
+      "location": {
+        "lat": -37.82099568,
+        "lng": 144.9467817
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-5da93cae6931",
+      "name": "Enterprize Park",
+      "type": "PARK",
+      "location": {
+        "lat": -37.82021027,
+        "lng": 144.95927686
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-cf7d26b3eb01",
+      "name": "Fawkner Park",
+      "type": "PARK",
+      "location": {
+        "lat": -37.84139967,
+        "lng": 144.98162567
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-9fb334baf5b3",
+      "name": "Fitzroy Gardens",
+      "type": "PARK",
+      "location": {
+        "lat": -37.81296163,
+        "lng": 144.98045571
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-c1e3feb90d44",
+      "name": "Flagstaff Gardens",
+      "type": "PARK",
+      "location": {
+        "lat": -37.81112229,
+        "lng": 144.95469606
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-81cd01723339",
+      "name": "J.J Holland Park",
+      "type": "PARK",
+      "location": {
+        "lat": -37.79823588,
+        "lng": 144.92383707
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-f2d7339b8f69",
+      "name": "Kings Domain",
+      "type": "PARK",
+      "location": {
+        "lat": -37.82552398,
+        "lng": 144.97410793
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-24e1a75911df",
+      "name": "Point Park",
+      "type": "PARK",
+      "location": {
+        "lat": -37.82335227,
+        "lng": 144.94210228
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-395e737d7102",
+      "name": "Princes Park",
+      "type": "PARK",
+      "location": {
+        "lat": -37.78701617,
+        "lng": 144.96111521
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-d0c3cea7fdd6",
+      "name": "Queen Victoria Gardens",
+      "type": "PARK",
+      "location": {
+        "lat": -37.82163812,
+        "lng": 144.97104953
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-696496da5298",
+      "name": "Riverslide Skate Park",
+      "type": "PARK",
+      "location": {
+        "lat": -37.82078871,
+        "lng": 144.97295179
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-05915a2e4326",
+      "name": "Royal Botanic Gardens",
+      "type": "PARK",
+      "location": {
+        "lat": -37.83066316,
+        "lng": 144.98085043
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-2c0bbb2db9c8",
+      "name": "Royal Park",
+      "type": "PARK",
+      "location": {
+        "lat": -37.79061743,
+        "lng": 144.95383424
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-7e3077d7171d",
+      "name": "Treasury Gardens",
+      "type": "PARK",
+      "location": {
+        "lat": -37.81439936,
+        "lng": 144.97595234
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-efd22fab5e8c",
+      "name": "Westgate Park",
+      "type": "PARK",
+      "location": {
+        "lat": -37.83149186,
+        "lng": 144.90882479
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-659ffc724201",
+      "name": "Yarra Park",
+      "type": "PARK",
+      "location": {
+        "lat": -37.82046937,
+        "lng": 144.98667111
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-b9947ec75a3d",
+      "name": "Argyle Square",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.80314806,
+        "lng": 144.9657613
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-4398b579994a",
+      "name": "Birrarung Marr",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.81806108,
+        "lng": 144.97314667
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-e3e1faa38f74",
+      "name": "Darling Square",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.81299207,
+        "lng": 144.98906256
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-ca2e05a9d960",
+      "name": "Federation Square",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.81785166,
+        "lng": 144.9689636
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-b36a0ce13c2d",
+      "name": "Lincoln Square",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.80279197,
+        "lng": 144.96276085
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-36617932ac75",
+      "name": "Macarthur Square",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.79833187,
+        "lng": 144.97151415
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-39ca57e48bd0",
+      "name": "Murchison Square",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.8002735,
+        "lng": 144.97305925
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-9e1ac3120d51",
+      "name": "New Quay",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.81521788,
+        "lng": 144.94161789
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-0abc734e0cbd",
+      "name": "Newmarket Reserve",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.78784733,
+        "lng": 144.92297213
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-1b8ecc923207",
+      "name": "North Melbourne Recreation Reserve",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.79883453,
+        "lng": 144.94145206
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-84ce7c2fa8a2",
+      "name": "Parliament Reserve",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.80985262,
+        "lng": 144.9734622
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-6a26821bd0b6",
+      "name": "Piazza Italia",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.80251642,
+        "lng": 144.96586309
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-72002783b878",
+      "name": "Powlett Reserve",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.81169299,
+        "lng": 144.98727567
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-e675a406ea8a",
+      "name": "Sandridge Rail Bridge",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.8201763,
+        "lng": 144.96298114
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-b5cb56e87300",
+      "name": "Shrine of Remembrance Reserve",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.8320734,
+        "lng": 144.97362836
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    },
+    {
+      "id": "quiet-7fea73aad9c1",
+      "name": "University Square",
+      "type": "PUBLIC_SPACE",
+      "location": {
+        "lat": -37.80041071,
+        "lng": 144.96039832
+      },
+      "sourceLabel": "City of Melbourne Open Data"
+    }
+  ]
 }
