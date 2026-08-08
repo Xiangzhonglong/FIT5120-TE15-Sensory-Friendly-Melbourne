@@ -1,65 +1,35 @@
-# Sensory-Friendly Melbourne project overview
+# CalmPath Melbourne project overview
 
 ## Product goal
 
-The project provides a no-login walking route comparison tool for sensory-sensitive adults travelling through Melbourne CBD. It does not simply recommend the shortest route. It combines candidate walking routes with nearby pedestrian data to produce explainable crowd-load levels, tolerance-based warnings, calmer alternatives and nearby public places that may offer a lower-stimulation pause.
+CalmPath compares walking routes in Melbourne CBD for people who prefer lower pedestrian pressure. It combines Mapbox route candidates with City of Melbourne, Neon and packaged pedestrian data, then explains each route using LOW, MODERATE or HIGH crowd-load levels.
 
-## Epic 1: sensory-aware route planning and navigation
+## Current backend scope
 
-- A user selects a destination inside Melbourne CBD.
-- The system returns at least one walking route and evaluates it using open pedestrian data.
-- Every route displays LOW, MODERATE or HIGH using text and non-colour indicators.
-- When a route exceeds the user's threshold, the system warns the user and recommends a calmer alternative.
-- Public transport access points near candidate routes are included in the response boundary.
+Included:
 
-## Epic 2: sensory environment monitoring
+- public, no-login Vercel application;
+- server-side Mapbox walking routes;
+- pedestrian observations and historical baselines;
+- route-to-sensor proximity matching and explainable scoring;
+- threshold warnings, calmer alternatives and quiet-space candidates;
+- truthful `LIVE`, `SNAPSHOT` and `MOCK` source metadata;
+- Neon read-only repositories, health checks and provider fallbacks;
+- stable `/api/routes` contracts, structured errors, tests and CI.
 
-- The system shows alerts for high-density pedestrian areas.
-- It presents nearby parks, libraries and other quiet-space candidates on demand.
-- It provides a transparent next-hour alert based on historical hourly patterns and recent conditions.
-- Every prediction identifies its time and confidence and is described as a possibility, not a certainty.
+Explicitly excluded by the current handoff:
 
-## Locked MVP scope
+- turn-by-turn and voice navigation;
+- AI-powered sensory navigation;
+- next-hour prediction;
+- accounts, saved journeys and personal history.
 
-The MVP must include:
+Public-transport access is a maintained backend interface, not a completed data integration. The responsible teammate must provide an approved dataset, attribution and fixtures before it is registered in the composition root.
 
-- a public AWS HTTPS URL;
-- no registration, login, user account or database;
-- destination selection and candidate walking routes;
-- explainable scoring based on pedestrian data;
-- LOW, MODERATE and HIGH textual levels;
-- a user threshold, crowd warning and alternative route;
-- current crowd alerts and nearby quiet-space candidates;
-- keyboard support, visible focus, non-colour indicators and reduced-motion support.
+## Deployment state
 
-The following evidence is still required before live acceptance:
+The production site is <https://calmpath-melbourne.vercel.app>. Repository code supports live Mapbox and Neon integrations, but each deployment must be checked independently because missing environment variables intentionally trigger fallbacks. Run the production smoke command documented in `requirements-traceability.md` after every release.
 
-- Mapbox Directions and Geocoding adapters;
-- City of Melbourne sensor-location, past-hour and hourly-history adapters;
-- route-to-sensor geospatial matching;
-- a mentor-approved public-facility or open-space dataset;
-- Transport Victoria access-point data;
-- generated historical baselines and prediction-accuracy records;
-- CloudWatch alarms, a public deployment and a complete demo checklist.
+## Ownership
 
-The MVP intentionally excludes:
-
-- login, profiles, saved routes or user history;
-- RDS, EC2 and operational microservices;
-- machine-learning models;
-- social features and full turn-by-turn navigation.
-
-## Current implementation
-
-The architecture and default mock flow are complete and runnable locally. The frontend, API, scoring, threshold recommendation, source metadata, validation, structured errors, fallback executor and AWS foundation are implemented. Shared ports now isolate every external integration, allowing team members to add live providers without modifying the central route orchestration service.
-
-All current default provider results are explicitly marked `MOCK`. The repository is not yet a live or publicly deployed system.
-
-## Recommended implementation sequence
-
-1. Implement Mapbox destination search and walking alternatives behind `RouteProvider`.
-2. Implement City of Melbourne current pedestrian data behind `PedestrianProvider`.
-3. Implement geospatial route-to-sensor matching behind `SensorMatcher` and calibrate thresholds with real distributions.
-4. Approve and integrate quiet-space and public-transport sources behind their repository ports.
-5. Implement versioned snapshots and historical baselines, then validate prediction accuracy.
-6. Deploy to AWS staging and complete accessibility, mobile, failure-mode and mentor-demo acceptance.
+Xiangzhonglong owns overall architecture and backend integration: shared contracts, ports, application composition, data truthfulness, error/fallback policy, integration tests, CI and technical documentation. Frontend accessibility, approved transport/place datasets, representative-user testing, mentor sign-off and deployment-secret administration require their named team owners.
