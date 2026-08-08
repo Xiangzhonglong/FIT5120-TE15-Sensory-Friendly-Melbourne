@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Coordinates, RouteSearchResponse } from "@sensory-melbourne/contracts";
+import type { Coordinates, QuietSpace, RouteSearchResponse } from "@sensory-melbourne/contracts";
 import { AlertPanel } from "./components/AlertPanel";
 import { DataSources } from "./components/DataSources";
 import { MapPanel } from "./components/MapPanel";
@@ -21,6 +21,11 @@ type LocationDraft = {
   coordinates: Coordinates | null;
 };
 
+type SearchOverrides = {
+  origin?: LocationDraft;
+  destination?: LocationDraft;
+};
+
 function locationDraft(choice: LocationChoice): LocationDraft {
   return { label: choice.label, coordinates: choice.coordinates };
 }
@@ -38,6 +43,7 @@ export function App() {
   const [threshold, setThreshold] = useState(0.6);
   const [result, setResult] = useState<RouteSearchResponse | null>(null);
   const [selectedRouteId, setSelectedRouteId] = useState<string>();
+  const [selectedQuietSpace, setSelectedQuietSpace] = useState<QuietSpace>();
   const [busy, setBusy] = useState(false);
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState<string>();
@@ -71,25 +77,30 @@ export function App() {
     );
   }, []);
 
-  const runSearch = useCallback(async () => {
+  const runSearch = useCallback(async (overrides: SearchOverrides = {}) => {
+    const requestedOrigin = overrides.origin ?? origin;
+    const requestedDestination = overrides.destination ?? destination;
     setBusy(true);
     setError(undefined);
     try {
       const [originCoordinates, destinationCoordinates] = await Promise.all([
-        origin.coordinates
-          ? Promise.resolve(origin.coordinates)
-          : geocodeLocation(origin.label, { accessToken: mapboxToken, restrictToCbd: false }),
-        destination.coordinates
-          ? Promise.resolve(destination.coordinates)
-          : geocodeLocation(destination.label, { accessToken: mapboxToken, restrictToCbd: true })
+        requestedOrigin.coordinates
+          ? Promise.resolve(requestedOrigin.coordinates)
+          : geocodeLocation(requestedOrigin.label, { accessToken: mapboxToken, restrictToCbd: false }),
+        requestedDestination.coordinates
+          ? Promise.resolve(requestedDestination.coordinates)
+          : geocodeLocation(requestedDestination.label, { accessToken: mapboxToken, restrictToCbd: true })
       ]);
       const response = await searchRoutes({
         origin: originCoordinates,
         destination: destinationCoordinates,
-        destinationLabel: destination.label.trim(),
+        destinationLabel: requestedDestination.label.trim(),
         preferences: { crowdThreshold: threshold }
       });
       setResult(response);
+      setSelectedQuietSpace((current) => current
+        ? response.quietSpaces.find((place) => place.id === current.id) ?? current
+        : undefined);
       setSelectedRouteId(response.routes.find((route) => route.recommended)?.id ?? response.routes[0]?.id);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Route search failed.");
@@ -106,6 +117,19 @@ export function App() {
     () => result?.routes.find((route) => route.id === selectedRouteId) ?? result?.routes[0],
     [result, selectedRouteId]
   );
+
+  const focusQuietSpace = useCallback((place: QuietSpace) => {
+    setSelectedQuietSpace(place);
+    document.getElementById("map-heading")?.scrollIntoView?.({ behavior: "smooth", block: "start" });
+  }, []);
+
+  const routeToQuietSpace = useCallback((place: QuietSpace) => {
+    const nextDestination = { label: place.name, coordinates: place.location };
+    setDestination(nextDestination);
+    setSelectedQuietSpace(place);
+    void runSearch({ destination: nextDestination });
+    document.getElementById("planner")?.scrollIntoView?.({ behavior: "smooth", block: "start" });
+  }, [runSearch]);
 
   const dataMode = result ? dataModeLabels[result.mode] : "Checking data";
   const dataTimestamp = result
@@ -169,7 +193,10 @@ export function App() {
               originIsCurrentLocation={origin.label === "Current location" && Boolean(origin.coordinates)}
               addressSearchAvailable={Boolean(mapboxToken)}
               onOriginChange={(value) => updateLocation(value, setOrigin)}
-              onDestinationChange={(value) => updateLocation(value, setDestination)}
+              onDestinationChange={(value) => {
+                setSelectedQuietSpace(undefined);
+                updateLocation(value, setDestination);
+              }}
               onThresholdChange={setThreshold}
               onUseCurrentLocation={useCurrentLocation}
               onSubmit={() => void runSearch()}
@@ -189,6 +216,7 @@ export function App() {
             <MapPanel
               route={selectedRoute}
               quietSpaces={result?.quietSpaces ?? []}
+              selectedQuietSpace={selectedQuietSpace}
               transportAccess={result?.transportAccess ?? []}
             />
             <div className="map-footer">
@@ -242,7 +270,12 @@ export function App() {
               alerts={result?.alerts ?? []}
               pedestrianSource={result?.dataSources.pedestrian}
             />
-            <QuietSpaces places={result?.quietSpaces ?? []} />
+            <QuietSpaces
+              places={result?.quietSpaces ?? []}
+              selectedPlaceId={selectedQuietSpace?.id}
+              onSelectPlace={focusQuietSpace}
+              onRouteToPlace={routeToQuietSpace}
+            />
             <TransportAccess points={result?.transportAccess ?? []} />
           </div>
         </section>

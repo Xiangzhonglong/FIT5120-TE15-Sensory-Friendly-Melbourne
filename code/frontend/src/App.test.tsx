@@ -123,6 +123,28 @@ describe("App", () => {
     });
   });
 
+  it("focuses a pause space and routes to it only after explicit confirmation", async () => {
+    render(<App />);
+    await screen.findByRole("heading", { name: "Calmer via Russell Street", level: 3 });
+    fireEvent.click(screen.getByRole("button", { name: /show 1 nearby place/i }));
+
+    const focusButton = screen.getByRole("button", { name: /show state library victoria on map/i });
+    fireEvent.click(focusButton);
+    expect(focusButton).toHaveAttribute("aria-pressed", "true");
+    expect(searchRoutesMock).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole("button", { name: /route to state library victoria/i }));
+
+    await waitFor(() => expect(searchRoutesMock).toHaveBeenCalledTimes(2));
+    expect(screen.getByLabelText(/destination in melbourne cbd/i)).toHaveValue("State Library Victoria");
+    expect(searchRoutesMock).toHaveBeenLastCalledWith({
+      origin: { lat: -37.8136, lng: 144.9631 },
+      destination: { lat: -37.8098, lng: 144.9652 },
+      destinationLabel: "State Library Victoria",
+      preferences: { crowdThreshold: 0.6 }
+    });
+  });
+
   it("shows an accessible error and retries a failed request", async () => {
     searchRoutesMock.mockRejectedValueOnce(new Error("The route service is unavailable."));
     render(<App />);

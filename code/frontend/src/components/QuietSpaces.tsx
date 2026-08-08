@@ -3,7 +3,14 @@ import type { QuietSpace } from "@sensory-melbourne/contracts";
 
 const placeSymbols = { PARK: "♧", LIBRARY: "▤", PUBLIC_SPACE: "◇" } as const;
 
-export function QuietSpaces({ places }: { places: QuietSpace[] }) {
+type Props = {
+  places: QuietSpace[];
+  selectedPlaceId: string | undefined;
+  onSelectPlace: (place: QuietSpace) => void;
+  onRouteToPlace: (place: QuietSpace) => void;
+};
+
+export function QuietSpaces({ places, selectedPlaceId, onSelectPlace, onRouteToPlace }: Props) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -18,10 +25,26 @@ export function QuietSpaces({ places }: { places: QuietSpace[] }) {
       </button>
       <div className="quiet-list" id="quiet-space-list" hidden={!expanded}>
         {places.length > 0 ? places.map((place) => (
-          <article key={place.id}>
-            <span className="quiet-icon" aria-hidden="true">{placeSymbols[place.type]}</span>
-            <div><h4>{place.name}</h4><p>{place.type.replace("_", " ").toLowerCase()} · {place.distanceM} m away</p></div>
-            <span className="place-arrow" aria-hidden="true">↗</span>
+          <article className={place.id === selectedPlaceId ? "selected" : undefined} key={place.id}>
+            <button
+              className="quiet-place-focus"
+              type="button"
+              aria-label={`Show ${place.name} on map`}
+              aria-pressed={place.id === selectedPlaceId}
+              onClick={() => onSelectPlace(place)}
+            >
+              <span className="quiet-icon" aria-hidden="true">{placeSymbols[place.type]}</span>
+              <span className="quiet-place-copy"><strong>{place.name}</strong><small>{place.type.replace("_", " ").toLowerCase()} · {place.distanceM} m from route</small></span>
+              <span className="place-arrow" aria-hidden="true">◎</span>
+            </button>
+            <button
+              className="quiet-place-route"
+              type="button"
+              aria-label={`Route to ${place.name}`}
+              onClick={() => onRouteToPlace(place)}
+            >
+              Route here
+            </button>
           </article>
         )) : <p className="empty-copy">No nearby pause spaces were returned for this route.</p>}
       </div>

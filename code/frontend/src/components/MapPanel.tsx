@@ -4,6 +4,7 @@ import type { QuietSpace, RouteOption, TransportAccessPoint } from "@sensory-mel
 type Props = {
   route: RouteOption | undefined;
   quietSpaces: QuietSpace[];
+  selectedQuietSpace: QuietSpace | undefined;
   transportAccess: TransportAccessPoint[];
 };
 
@@ -13,7 +14,7 @@ function mapRouteColour(route: RouteOption): string {
   return "#9a463f";
 }
 
-export function MapPanel({ route, quietSpaces, transportAccess }: Props) {
+export function MapPanel({ route, quietSpaces, selectedQuietSpace, transportAccess }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -61,11 +62,21 @@ export function MapPanel({ route, quietSpaces, transportAccess }: Props) {
         if (start) new mapboxgl.Marker({ color: "#173f35", scale: 0.82 }).setLngLat(start).setPopup(new mapboxgl.Popup({ offset: 16 }).setText("Start")).addTo(map);
         if (destination) new mapboxgl.Marker({ color: "#173f35", scale: 0.95 }).setLngLat(destination).setPopup(new mapboxgl.Popup({ offset: 16 }).setText("Destination")).addTo(map);
 
-        quietSpaces.forEach((place) => {
-          new mapboxgl.Marker({ color: "#5f877d", scale: 0.72 })
+        const displayedQuietSpaces = selectedQuietSpace && !quietSpaces.some((place) => place.id === selectedQuietSpace.id)
+          ? [...quietSpaces, selectedQuietSpace]
+          : quietSpaces;
+        displayedQuietSpaces.forEach((place) => {
+          const marker = new mapboxgl.Marker({
+            color: place.id === selectedQuietSpace?.id ? "#173f35" : "#5f877d",
+            scale: place.id === selectedQuietSpace?.id ? 0.88 : 0.72
+          })
             .setLngLat([place.location.lng, place.location.lat])
-            .setPopup(new mapboxgl.Popup({ offset: 16 }).setText(`${place.name} · ${place.distanceM} m away`))
+            .setPopup(new mapboxgl.Popup({ offset: 16 }).setText(`${place.name} · ${place.distanceM} m from route`))
             .addTo(map!);
+          if (place.id === selectedQuietSpace?.id) {
+            marker.togglePopup();
+            map!.flyTo({ center: [place.location.lng, place.location.lat], zoom: 16, duration: 0 });
+          }
         });
         transportAccess.forEach((point) => {
           new mapboxgl.Marker({ color: "#7d6752", scale: 0.7 })
@@ -80,11 +91,15 @@ export function MapPanel({ route, quietSpaces, transportAccess }: Props) {
       cancelled = true;
       map?.remove();
     };
-  }, [mapToken, quietSpaces, route, transportAccess]);
+  }, [mapToken, quietSpaces, route, selectedQuietSpace, transportAccess]);
 
   if (!mapToken) {
     return (
-      <div className="map-fallback" role="img" aria-label={`Schematic map of ${route?.name ?? "the selected Melbourne CBD route"}`}>
+      <div
+        className="map-fallback"
+        role="img"
+        aria-label={`Schematic map of ${route?.name ?? "the selected Melbourne CBD route"}${selectedQuietSpace ? `. Focused pause space: ${selectedQuietSpace.name}, ${selectedQuietSpace.distanceM} metres from route.` : ""}`}
+      >
         <div className="map-water" aria-hidden="true" />
         <div className="map-grid" aria-hidden="true" />
         <span className="map-street street-one" aria-hidden="true">Swanston St</span>
@@ -95,6 +110,14 @@ export function MapPanel({ route, quietSpaces, transportAccess }: Props) {
         <span className="map-pin destination"><i aria-hidden="true" />Destination</span>
         <span className="schematic-place library" aria-hidden="true">▤</span>
         <span className="schematic-place park" aria-hidden="true">✦</span>
+        {selectedQuietSpace && (
+          <div className="schematic-selected-place">
+            <span aria-hidden="true">✦</span>
+            <small>Focused pause space</small>
+            <strong>{selectedQuietSpace.name}</strong>
+            <small>{selectedQuietSpace.distanceM} m from route</small>
+          </div>
+        )}
         <div className="map-note">
           <span className={`level level-${route?.sensoryLevel.toLowerCase() ?? "low"}`}>{route?.sensoryLevel ?? "LOW"} LOAD</span>
           <strong>{route ? `${Math.round(route.sensoryScore * 100)}/100 crowd score` : "Route data loading"}</strong>
