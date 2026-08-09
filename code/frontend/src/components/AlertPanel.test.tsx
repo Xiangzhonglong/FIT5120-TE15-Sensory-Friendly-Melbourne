@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { routeSearchResponse } from "../test/fixtures";
 import { AlertPanel } from "./AlertPanel";
@@ -61,5 +61,34 @@ describe("AlertPanel", () => {
 
     expect(screen.getByRole("status")).toHaveTextContent("Checking pedestrian data");
     expect(screen.queryByText("Within your comfort level")).not.toBeInTheDocument();
+  });
+
+  it("shows three alerts first and expands to the remaining five on request", () => {
+    const alerts = Array.from({ length: 8 }, (_, index) => ({
+      ...routeSearchResponse.alerts[0]!,
+      id: `crowd-${index + 1}`,
+      area: `Crowd area ${index + 1}`
+    }));
+
+    render(
+      <AlertPanel
+        alerts={alerts}
+        pedestrianSource={{ ...routeSearchResponse.dataSources.pedestrian, mode: "SNAPSHOT" }}
+      />
+    );
+
+    expect(screen.getByText("Crowd area 3")).toBeInTheDocument();
+    expect(screen.queryByText("Crowd area 4")).not.toBeInTheDocument();
+
+    const expandButton = screen.getByRole("button", { name: /show 5 more alerts/i });
+    expect(expandButton).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(expandButton);
+
+    expect(screen.getByText("Crowd area 8")).toBeInTheDocument();
+    const collapseButton = screen.getByRole("button", { name: /show fewer alerts/i });
+    expect(collapseButton).toHaveAttribute("aria-expanded", "true");
+    fireEvent.click(collapseButton);
+
+    expect(screen.queryByText("Crowd area 4")).not.toBeInTheDocument();
   });
 });

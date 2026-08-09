@@ -18,7 +18,11 @@ export function TransportAccess({ points }: { points: TransportAccessPoint[] }) 
           {points.slice(0, 4).map((point) => (
             <article key={point.id}>
               <span className="transport-type" aria-hidden="true">{symbol(point.type)}</span>
-              <div><strong>{point.name}</strong><p>{point.type.toLowerCase()} · {point.distanceFromRouteM} m from route</p></div>
+              <div>
+                <strong>{point.name}</strong>
+                <p>{point.type.toLowerCase()} · {point.distanceFromRouteM} m from route</p>
+                <small className="transport-source">Source: {point.sourceLabel}</small>
+              </div>
             </article>
           ))}
         </div>

@@ -27,6 +27,7 @@ describe("App", () => {
     expect(screen.getByText("DEMO ESTIMATE")).toBeInTheDocument();
     expect(screen.queryByText("CURRENT")).not.toBeInTheDocument();
     expect(screen.queryByText("NEXT HOUR")).not.toBeInTheDocument();
+    expect(screen.getByText(/updated 8 Aug 2026/i)).toBeInTheDocument();
 
     expect(searchRoutesMock).toHaveBeenCalledWith({
       origin: { lat: -37.8136, lng: 144.9631 },
@@ -123,6 +124,28 @@ describe("App", () => {
     });
   });
 
+  it("focuses a pause space and routes to it only after explicit confirmation", async () => {
+    render(<App />);
+    await screen.findByRole("heading", { name: "Calmer via Russell Street", level: 3 });
+    fireEvent.click(screen.getByRole("button", { name: /show 1 nearby place/i }));
+
+    const focusButton = screen.getByRole("button", { name: /show state library victoria on map/i });
+    fireEvent.click(focusButton);
+    expect(focusButton).toHaveAttribute("aria-pressed", "true");
+    expect(searchRoutesMock).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole("button", { name: /route to state library victoria/i }));
+
+    await waitFor(() => expect(searchRoutesMock).toHaveBeenCalledTimes(2));
+    expect(screen.getByLabelText(/destination in melbourne cbd/i)).toHaveValue("State Library Victoria");
+    expect(searchRoutesMock).toHaveBeenLastCalledWith({
+      origin: { lat: -37.8136, lng: 144.9631 },
+      destination: { lat: -37.8098, lng: 144.9652 },
+      destinationLabel: "State Library Victoria",
+      preferences: { crowdThreshold: 0.6 }
+    });
+  });
+
   it("shows an accessible error and retries a failed request", async () => {
     searchRoutesMock.mockRejectedValueOnce(new Error("The route service is unavailable."));
     render(<App />);
@@ -133,5 +156,32 @@ describe("App", () => {
 
     expect(await screen.findByRole("heading", { name: "Calmer via Russell Street", level: 3 })).toBeInTheDocument();
     expect(searchRoutesMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("uses structured backend errors to show recovery and a support reference", async () => {
+    searchRoutesMock.mockRejectedValueOnce(Object.assign(
+      new Error("Mapbox did not respond in time."),
+      { code: "UPSTREAM_TIMEOUT", status: 504, requestId: "request-123" }
+    ));
+    render(<App />);
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("Route services are temporarily unavailable.");
+    expect(alert).toHaveTextContent("Mapbox did not respond in time.");
+    expect(alert).toHaveTextContent("Reference: request-123");
+    expect(screen.getByRole("button", { name: /try again/i })).toBeInTheDocument();
+  });
+
+  it("asks users to correct invalid route details without offering a blind retry", async () => {
+    searchRoutesMock.mockRejectedValueOnce(Object.assign(
+      new Error("Destination must be inside the supported Melbourne CBD area."),
+      { code: "DESTINATION_OUTSIDE_CBD", status: 400, requestId: "request-456" }
+    ));
+    render(<App />);
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("Check your route details.");
+    expect(alert).toHaveTextContent("Reference: request-456");
+    expect(screen.queryByRole("button", { name: /try again/i })).not.toBeInTheDocument();
   });
 });

@@ -8,8 +8,10 @@ const mapboxMocks = vi.hoisted(() => ({
   addLayer: vi.fn(),
   addSource: vi.fn(),
   fitBounds: vi.fn(),
+  flyTo: vi.fn(),
   mapConstructor: vi.fn(),
   markerAddTo: vi.fn(),
+  markerTogglePopup: vi.fn(),
   remove: vi.fn()
 }));
 
@@ -23,6 +25,7 @@ vi.mock("mapbox-gl", () => {
     addLayer = mapboxMocks.addLayer;
     addSource = mapboxMocks.addSource;
     fitBounds = mapboxMocks.fitBounds;
+    flyTo = mapboxMocks.flyTo;
     remove = mapboxMocks.remove;
 
     on(_event: string, callback: () => void) {
@@ -51,6 +54,11 @@ vi.mock("mapbox-gl", () => {
 
     addTo() {
       mapboxMocks.markerAddTo();
+      return this;
+    }
+
+    togglePopup() {
+      mapboxMocks.markerTogglePopup();
       return this;
     }
   }
@@ -83,6 +91,7 @@ describe("MapPanel", () => {
       <MapPanel
         route={route}
         quietSpaces={routeSearchResponse.quietSpaces}
+        selectedQuietSpace={undefined}
         transportAccess={routeSearchResponse.transportAccess}
       />
     );
@@ -98,6 +107,7 @@ describe("MapPanel", () => {
       <MapPanel
         route={route}
         quietSpaces={routeSearchResponse.quietSpaces}
+        selectedQuietSpace={undefined}
         transportAccess={routeSearchResponse.transportAccess}
       />
     );
@@ -108,5 +118,26 @@ describe("MapPanel", () => {
       "selected-route",
       expect.objectContaining({ type: "geojson" })
     );
+  });
+
+  it("focuses and opens the selected quiet-space marker", async () => {
+    vi.stubEnv("VITE_MAPBOX_TOKEN", "test-browser-token");
+    const selectedQuietSpace = routeSearchResponse.quietSpaces[0];
+
+    render(
+      <MapPanel
+        route={route}
+        quietSpaces={routeSearchResponse.quietSpaces}
+        selectedQuietSpace={selectedQuietSpace}
+        transportAccess={routeSearchResponse.transportAccess}
+      />
+    );
+
+    await waitFor(() => expect(mapboxMocks.markerTogglePopup).toHaveBeenCalledOnce());
+    expect(mapboxMocks.flyTo).toHaveBeenCalledWith({
+      center: [selectedQuietSpace!.location.lng, selectedQuietSpace!.location.lat],
+      zoom: 16,
+      duration: 0
+    });
   });
 });

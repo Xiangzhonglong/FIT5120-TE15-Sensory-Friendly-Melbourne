@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { DataSourceStatus, SensoryAlert, SourceMode } from "@sensory-melbourne/contracts";
 
 type Props = {
@@ -38,6 +39,8 @@ const sourceCopy: Record<SourceMode, SourceCopy> = {
 };
 
 export function AlertPanel({ alerts, pedestrianSource }: Props) {
+  const [expanded, setExpanded] = useState(false);
+
   if (!pedestrianSource) {
     return (
       <section className="alert-panel insight-card" aria-labelledby="alerts-heading">
@@ -54,6 +57,9 @@ export function AlertPanel({ alerts, pedestrianSource }: Props) {
   }
 
   const copy = sourceCopy[pedestrianSource.mode];
+  const availableAlerts = alerts.slice(0, 8);
+  const visibleAlerts = expanded ? availableAlerts : availableAlerts.slice(0, 3);
+  const remainingAlertCount = Math.max(0, availableAlerts.length - 3);
 
   return (
     <section className="alert-panel insight-card" aria-labelledby="alerts-heading">
@@ -67,17 +73,32 @@ export function AlertPanel({ alerts, pedestrianSource }: Props) {
           <div><strong>Within your comfort level</strong><p>{copy.empty}</p></div>
         </div>
       ) : (
-        <div className="alert-list">
-          {alerts.slice(0, 3).map((alert) => (
-            <article key={alert.id} className={`alert-item alert-${alert.severity.toLowerCase()}`}>
-              <div className="alert-item-topline">
-                <span className={`alert-type ${pedestrianSource.mode.toLowerCase()}`}>{copy.badge}</span>
-                <span>{alert.confidence.toLowerCase()} confidence</span>
-              </div>
-              <strong>{alert.area}</strong>
-              <p>{alert.message}</p>
-            </article>
-          ))}
+        <div className="alert-results">
+          <div className="alert-list" id="crowd-alert-list">
+            {visibleAlerts.map((alert) => (
+              <article key={alert.id} className={`alert-item alert-${alert.severity.toLowerCase()}`}>
+                <div className="alert-item-topline">
+                  <span className={`alert-type ${pedestrianSource.mode.toLowerCase()}`}>{copy.badge}</span>
+                  <span>{alert.confidence.toLowerCase()} confidence</span>
+                </div>
+                <strong>{alert.area}</strong>
+                <p>{alert.message}</p>
+              </article>
+            ))}
+          </div>
+          {remainingAlertCount > 0 && (
+            <button
+              className="alert-disclosure"
+              type="button"
+              aria-expanded={expanded}
+              aria-controls="crowd-alert-list"
+              onClick={() => setExpanded((value) => !value)}
+            >
+              {expanded
+                ? "Show fewer alerts"
+                : `Show ${remainingAlertCount} more ${remainingAlertCount === 1 ? "alert" : "alerts"}`}
+            </button>
+          )}
         </div>
       )}
       <p className="insight-footnote"><span aria-hidden="true">i</span> {copy.footnote}</p>
