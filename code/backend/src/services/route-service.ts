@@ -14,6 +14,7 @@ import type { RouteProvider } from "../ports/route-provider.js";
 import type { SensorMatcher } from "../ports/sensor-matcher.js";
 import type { TransportRepository } from "../ports/transport-repository.js";
 import type { RouteSearchContext } from "../domain.js";
+import { filterRouteCandidates, rankRouteOptions } from "./route-ranking.js";
 import { classifySensoryLevel, explainScore, routeCrowdScore } from "./scoring.js";
 
 export type RouteServiceDependencies = {
@@ -63,15 +64,12 @@ export class RouteService {
     const startedAt = Date.now();
     const threshold = Math.max(0, Math.min(1, request.preferences.crowdThreshold));
     const routeResult = await this.dependencies.routeProvider.getWalkingRoutes(request);
+    const candidates = filterRouteCandidates(routeResult.data);
 
-    const [pedestrianResult, quietSpaceResult, transportResult] = await Promise.all([
-      this.dependencies.pedestrianProvider.getCurrentSensors(),
-      this.dependencies.quietSpaceRepository.findNearRoutes(routeResult.data),
-      this.dependencies.transportRepository.findNearRoutes(routeResult.data)
-    ]);
+    const pedestrianResult = await this.dependencies.pedestrianProvider.getCurrentSensors();
 
     const matchedSensors = new Map<string, ReturnType<SensorMatcher["matchRoute"]>>();
-    const routes = routeResult.data
+    const scoredRoutes = candidates
       .map<RouteOption>((candidate) => {
         const routeSensors = this.dependencies.sensorMatcher.matchRoute(candidate, pedestrianResult.data);
         matchedSensors.set(candidate.id, routeSensors);
@@ -88,14 +86,20 @@ export class RouteService {
           reasons: explainScore(sensoryScore, routeSensors),
           recommended: false
         };
-      })
-      .sort((a, b) => a.sensoryScore - b.sensoryScore || a.durationMin - b.durationMin);
+      });
+    const routes = rankRouteOptions(scoredRoutes, threshold);
 
-    const withinThreshold = routes.find((route) => route.sensoryScore <= threshold) ?? routes[0];
-    if (withinThreshold) withinThreshold.recommended = true;
+    const [quietSpaceResult, transportResult] = await Promise.all([
+      this.dependencies.quietSpaceRepository.findNearRoutes(routes),
+      this.dependencies.transportRepository.findNearRoutes(routes)
+    ]);
 
+    const returnedRouteIds = new Set(routes.map((route) => route.id));
     const relevantSensors = Array.from(new Map(
-      Array.from(matchedSensors.values()).flat().map((sensor) => [sensor.id, sensor])
+      Array.from(matchedSensors.entries())
+        .filter(([routeId]) => returnedRouteIds.has(routeId))
+        .flatMap(([, sensors]) => sensors)
+        .map((sensor) => [sensor.id, sensor])
     ).values());
     const alerts: SensoryAlert[] = relevantSensors
       .filter((sensor) => sensor.currentCount / sensor.historicalP95 > threshold)
