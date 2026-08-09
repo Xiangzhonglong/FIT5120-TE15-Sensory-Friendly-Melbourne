@@ -64,7 +64,14 @@ The Neon database currently contains cleaned relational data for:
 - historical hourly pedestrian counts;
 - quiet-space candidates.
 
-The `pedestrian_count_minute` table may be empty. When `LIVE_DATA_ENABLED=true`, the backend requests the official City of Melbourne rolling past-hour feed directly. If that request is unavailable or stale, it falls back through Neon historical data, the packaged baseline snapshot, and finally deterministic mocks.
+When `LIVE_DATA_ENABLED=true`, the backend requests the official City of Melbourne rolling past-hour
+per-minute dataset (`pedestrian-counting-system-past-hour-counts-per-minute`) directly and aggregates
+the recent records by sensor. These live observations are not stored in Neon. Neon uses
+`pedestrian_sensor` and `pedestrian_count_hourly` only, and always reports pedestrian results as a
+historical `SNAPSHOT`. If the live API is unavailable or stale, the backend falls back through Neon
+historical data, the packaged baseline snapshot, and finally deterministic mocks. The unused
+`pedestrian_count_minute` table is removed by database migration
+`002_drop_unused_pedestrian_count_minute.sql`.
 
 Quiet-space candidates are loaded from Neon when available and otherwise from the packaged snapshot. Both providers calculate distance to returned route geometry. Transport access remains empty until an approved transport dataset is delivered; the response reports this boundary as `MOCK` rather than inventing records.
 

@@ -123,17 +123,13 @@ The current Neon schema contains:
 | --- | --- | --- |
 | `pedestrian_sensor` | Sensor identifiers, labels, status and coordinates | Populated with cleaned sensor data |
 | `pedestrian_count_hourly` | Historical hourly pedestrian counts | Populated with cleaned historical data |
-| `pedestrian_count_minute` | Optional near-real-time minute observations | Currently empty |
 | `quiet_space_candidate` | Libraries, parks and public-space candidates | Populated with cleaned candidate data |
 
-The historical data supports comparison with normal crowd patterns. Near-real-time information is requested directly from the approved City of Melbourne API when live data is enabled. It may alternatively be:
-
-- requested directly from an approved external API;
-- stored as a small simulated test dataset;
-- stored as only the latest record for each sensor; or
-- retained for a limited period.
-
-Minute-level records must not be appended indefinitely without a retention policy.
+The historical data supports comparison with normal crowd patterns. When live data is enabled,
+near-real-time information comes only from the City of Melbourne rolling past-hour per-minute API
+(`pedestrian-counting-system-past-hour-counts-per-minute`) and is not stored in Neon. Neon provides
+the hourly historical `SNAPSHOT` fallback. The unused `pedestrian_count_minute` table is removed by
+database migration `002_drop_unused_pedestrian_count_minute.sql`.
 
 ### Baseline data
 
