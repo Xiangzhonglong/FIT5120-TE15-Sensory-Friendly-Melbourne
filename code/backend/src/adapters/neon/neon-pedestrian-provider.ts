@@ -10,7 +10,6 @@ type PedestrianRow = {
   longitude: number | string;
   current_count: number | string;
   p95_count: number | string;
-  live_observed_at: string | Date | null;
   baseline_date: string | Date;
 };
 
@@ -51,28 +50,17 @@ export class NeonPedestrianProvider implements PedestrianProvider {
         WHERE EXTRACT(ISODOW FROM sensing_date)::int - 1 = $1
           AND hour_of_day = $2
         GROUP BY location_id
-      ),
-      recent AS (
-        SELECT
-          location_id,
-          SUM(pedestrian_count)::double precision AS current_count,
-          MAX(observed_at) AS live_observed_at
-        FROM pedestrian_count_minute
-        WHERE observed_at >= NOW() - INTERVAL '60 minutes'
-        GROUP BY location_id
       )
       SELECT
         sensor.location_id,
         sensor.sensor_description AS sensor_name,
         sensor.latitude,
         sensor.longitude,
-        COALESCE(recent.current_count, baseline.median_count)::double precision AS current_count,
+        baseline.median_count::double precision AS current_count,
         baseline.p95_count::double precision AS p95_count,
-        recent.live_observed_at,
         baseline.baseline_date
       FROM pedestrian_sensor sensor
       INNER JOIN baseline ON baseline.location_id = sensor.location_id
-      LEFT JOIN recent ON recent.location_id = sensor.location_id
       WHERE sensor.status = 'A' AND baseline.p95_count > 0
     `, [weekday, hour]);
     if (rows.length === 0) throw new Error("Neon contains no usable pedestrian sensor baseline rows");
@@ -93,22 +81,16 @@ export class NeonPedestrianProvider implements PedestrianProvider {
     });
     if (sensors.length === 0) throw new Error("Neon pedestrian rows failed validation");
 
-    const liveDates = rows
-      .map((row) => row.live_observed_at ? new Date(row.live_observed_at) : null)
-      .filter((date): date is Date => Boolean(date) && Number.isFinite(date!.getTime()));
-    const allLive = liveDates.length === rows.length;
-    const timestamp = allLive
-      ? new Date(Math.min(...liveDates.map((date) => date.getTime()))).toISOString()
-      : asIso(rows.map((row) => row.baseline_date).sort().at(-1)!);
-    const stale = now.getTime() - Date.parse(timestamp) > (allLive ? 90 * 60_000 : 120 * 24 * 60 * 60_000);
+    const timestamp = asIso(rows.map((row) => row.baseline_date).sort().at(-1)!);
+    const stale = now.getTime() - Date.parse(timestamp) > 120 * 24 * 60 * 60_000;
 
     return {
       data: sensors,
       status: {
-        source: allLive ? "City of Melbourne via Neon" : "City of Melbourne historical baseline via Neon",
-        mode: allLive ? "LIVE" : "SNAPSHOT",
+        source: "City of Melbourne historical baseline via Neon",
+        mode: "SNAPSHOT",
         timestamp,
-        confidence: allLive ? "HIGH" : "MEDIUM",
+        confidence: "MEDIUM",
         stale
       }
     };
