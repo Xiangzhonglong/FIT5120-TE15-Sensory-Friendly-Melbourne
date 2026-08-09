@@ -1,9 +1,12 @@
+import type { RouteOption } from "@sensory-melbourne/contracts";
 import type { CandidateRoute } from "../domain.js";
 
 type Coordinate = [number, number];
 
 export const MAX_DISTANCE_RATIO = 1.4;
 export const MAX_DURATION_RATIO = 1.5;
+export const SENSORY_SCORE_TIE_THRESHOLD = 0.05;
+export const MAX_RETURNED_ROUTES = 3;
 
 const SIMILAR_ROUTE_DISTANCE_M = 30;
 const MAX_COMPARISON_POINTS = 20;
@@ -31,6 +34,32 @@ export function filterExcessiveDetours(routes: CandidateRoute[]): CandidateRoute
 /** Applies candidate-level rules before sensory scoring and ranking. */
 export function filterRouteCandidates(routes: CandidateRoute[]): CandidateRoute[] {
   return filterExcessiveDetours(deduplicateRoutes(routes));
+}
+
+/** Sorts scored routes, selects at most three, and marks exactly one as recommended. */
+export function rankRouteOptions(routes: RouteOption[], crowdThreshold: number): RouteOption[] {
+  const threshold = Math.max(0, Math.min(1, crowdThreshold));
+  const rankedRoutes = routes
+    .map((route) => ({ ...route, recommended: false }))
+    .sort((first, second) => {
+      if (Math.abs(first.sensoryScore - second.sensoryScore) < SENSORY_SCORE_TIE_THRESHOLD) {
+        return first.durationMin - second.durationMin || first.sensoryScore - second.sensoryScore;
+      }
+      return first.sensoryScore - second.sensoryScore;
+    })
+    .slice(0, MAX_RETURNED_ROUTES);
+
+  const withinThresholdIndex = rankedRoutes.findIndex((route) => route.sensoryScore <= threshold);
+  if (rankedRoutes.length > 0) {
+    const lowestScoreIndex = rankedRoutes.reduce(
+      (bestIndex, route, index) =>
+        route.sensoryScore < rankedRoutes[bestIndex]!.sensoryScore ? index : bestIndex,
+      0
+    );
+    rankedRoutes[withinThresholdIndex >= 0 ? withinThresholdIndex : lowestScoreIndex]!.recommended = true;
+  }
+
+  return rankedRoutes;
 }
 
 function routesAreSimilar(first: CandidateRoute, second: CandidateRoute): boolean {
