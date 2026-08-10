@@ -18,9 +18,12 @@ type MapboxResponse = {
 };
 
 const MINIMUM_ROUTE_COUNT = 3;
-const MIN_WAYPOINT_OFFSET_M = 120;
-const MAX_WAYPOINT_OFFSET_M = 450;
-const WAYPOINT_OFFSET_RATIO = 0.2;
+const MIN_DIRECT_DISTANCE_FOR_WAYPOINTS_M = 400;
+const MIN_WAYPOINT_OFFSET_M = 60;
+const MAX_WAYPOINT_OFFSET_M = 250;
+const WAYPOINT_OFFSET_RATIO = 0.12;
+const MIN_BACKWARD_PROGRESS_M = 80;
+const MAX_BACKWARD_PROGRESS_RATIO = 0.08;
 const SIMILAR_ROUTE_DISTANCE_M = 30;
 
 export class MapboxRouteProvider implements RouteProvider {
@@ -46,7 +49,11 @@ export class MapboxRouteProvider implements RouteProvider {
         )
       );
       for (const result of waypointRoutes) {
-        if (result.status === "fulfilled") allRoutes.push(...result.value);
+        if (result.status === "fulfilled") {
+          allRoutes.push(...result.value.filter((route) =>
+            !hasSignificantBackwardProgress(route, origin, destination)
+          ));
+        }
       }
     }
 
@@ -119,7 +126,7 @@ function createSideWaypoints(origin: Coordinate, destination: Coordinate): Coord
   const eastM = (destination[0] - origin[0]) * metresPerLongitudeDegree;
   const northM = (destination[1] - origin[1]) * 110_540;
   const directDistanceM = Math.hypot(eastM, northM);
-  if (directDistanceM === 0) return [];
+  if (directDistanceM < MIN_DIRECT_DISTANCE_FOR_WAYPOINTS_M) return [];
 
   const offsetM = Math.min(
     MAX_WAYPOINT_OFFSET_M,
@@ -133,6 +140,33 @@ function createSideWaypoints(origin: Coordinate, destination: Coordinate): Coord
     midpoint[0] + side * perpendicularEast * offsetM / metresPerLongitudeDegree,
     midpoint[1] + side * perpendicularNorth * offsetM / 110_540
   ]);
+}
+
+function hasSignificantBackwardProgress(
+  route: CandidateRoute,
+  origin: Coordinate,
+  destination: Coordinate
+): boolean {
+  const meanLatitudeRadians = ((origin[1] + destination[1]) / 2) * Math.PI / 180;
+  const metresPerLongitudeDegree = 111_320 * Math.cos(meanLatitudeRadians);
+  const destinationEastM = (destination[0] - origin[0]) * metresPerLongitudeDegree;
+  const destinationNorthM = (destination[1] - origin[1]) * 110_540;
+  const directDistanceM = Math.hypot(destinationEastM, destinationNorthM);
+  if (directDistanceM === 0) return false;
+
+  const unitEast = destinationEastM / directDistanceM;
+  const unitNorth = destinationNorthM / directDistanceM;
+  const progress = route.geometry.coordinates.map(([lng, lat]) => {
+    const eastM = (lng - origin[0]) * metresPerLongitudeDegree;
+    const northM = (lat - origin[1]) * 110_540;
+    return eastM * unitEast + northM * unitNorth;
+  });
+  const backwardProgressM = progress.slice(1).reduce((total, value, index) =>
+    total + Math.max(0, progress[index]! - value), 0
+  );
+
+  return backwardProgressM > Math.max(MIN_BACKWARD_PROGRESS_M, directDistanceM * 0.12)
+    && backwardProgressM / route.distanceM > MAX_BACKWARD_PROGRESS_RATIO;
 }
 
 function deduplicateRoutes(routes: CandidateRoute[]): CandidateRoute[] {

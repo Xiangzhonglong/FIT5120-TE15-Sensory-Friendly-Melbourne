@@ -94,6 +94,32 @@ describe("Mapbox route provider", () => {
     expect(result.data[0]).toMatchObject({ distanceM: 1200, durationMin: 15 });
   });
 
+  it("rejects a supplemental waypoint route that substantially doubles back", async () => {
+    const foldedGeometry: [number, number][] = [
+      origin,
+      [144.9668, -37.8178],
+      [144.9635, -37.8140],
+      destination
+    ];
+    const validGeometry: [number, number][] = [origin, [144.9700, -37.8155], destination];
+    const responses = [
+      mapboxResponse([mapboxRoute([origin, destination])]),
+      mapboxResponse([mapboxRoute(foldedGeometry, 1450, 1050)]),
+      mapboxResponse([mapboxRoute(validGeometry, 1360, 990)])
+    ];
+    const fetcher = vi.fn(async (_input: string | URL | Request, _init?: RequestInit) =>
+      responses.shift() as Response
+    );
+    const provider = new MapboxRouteProvider("test-token", () => new Date(), fetcher as typeof fetch);
+
+    const result = await provider.getWalkingRoutes(request);
+
+    expect(fetcher).toHaveBeenCalledTimes(3);
+    expect(result.data).toHaveLength(2);
+    expect(result.data.map((route) => route.geometry.coordinates)).toContainEqual(validGeometry);
+    expect(result.data.map((route) => route.geometry.coordinates)).not.toContainEqual(foldedGeometry);
+  });
+
   it("rejects unusable upstream responses", async () => {
     const fetcher = vi.fn(async (_input: string | URL | Request, _init?: RequestInit) => new Response(JSON.stringify({ code: "NoRoute", routes: [] }), { status: 200 }));
     const provider = new MapboxRouteProvider("test-token", () => new Date(), fetcher as typeof fetch);

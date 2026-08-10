@@ -130,6 +130,53 @@ describe("route service", () => {
     expect(result.routes.map((route) => route.id)).toEqual(["reasonable", "short"]);
   });
 
+  it("removes a backtracking route even when it is within detour limits", async () => {
+    const direct = candidate("direct", 0, 10, 1000);
+    const normalBend = candidate("normal-bend", 1, 12, 1150);
+    const backtracking: CandidateRoute = {
+      ...candidate("backtracking", 2, 12, 1200),
+      geometry: {
+        type: "LineString",
+        coordinates: [
+          [144.9631, -37.8136],
+          [144.9629, -37.8105],
+          [144.96305, -37.8130],
+          [144.9628, -37.8102]
+        ]
+      }
+    };
+
+    const result = await searchWithScores(
+      [direct, normalBend, backtracking],
+      { direct: 0.4, "normal-bend": 0.3, backtracking: 0.1 }
+    );
+
+    expect(result.routes.map((route) => route.id)).toEqual(["normal-bend", "direct"]);
+  });
+
+  it("removes a route that retraces the same corridor in the opposite direction", async () => {
+    const direct = candidate("direct", 0, 10, 1000);
+    const reverseOverlap: CandidateRoute = {
+      ...candidate("reverse-overlap", 2, 12, 1300),
+      geometry: {
+        type: "LineString",
+        coordinates: [
+          [144.9631, -37.8136],
+          [144.9661, -37.8136],
+          [144.9631, -37.8136],
+          [144.9628, -37.8102]
+        ]
+      }
+    };
+
+    const result = await searchWithScores(
+      [direct, reverseOverlap],
+      { direct: 0.4, "reverse-overlap": 0.1 }
+    );
+
+    expect(result.routes.map((route) => route.id)).toEqual(["direct"]);
+  });
+
   it("sorts routes by sensory score from low to high", async () => {
     const result = await searchWithScores([
       candidate("high", 0, 12, 1000),
