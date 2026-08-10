@@ -19,7 +19,7 @@ export function MapPanel({ route, quietSpaces, selectedQuietSpace, transportAcce
   const mapToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
   useEffect(() => {
-    if (!mapToken || !container.current || !route) return;
+    if (!mapToken || !container.current) return;
     let cancelled = false;
     let map: import("mapbox-gl").Map | undefined;
 
@@ -35,7 +35,7 @@ export function MapPanel({ route, quietSpaces, selectedQuietSpace, transportAcce
       });
       map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
       map.on("load", () => {
-        if (!map) return;
+        if (!map || !route) return;
         map.addSource("selected-route", {
           type: "geojson",
           data: { type: "Feature", properties: {}, geometry: route.geometry }
@@ -127,5 +127,11 @@ export function MapPanel({ route, quietSpaces, selectedQuietSpace, transportAcce
     );
   }
 
-  return <div ref={container} className="map-canvas" aria-label="Interactive route map" />;
+  return (
+    <div
+      ref={container}
+      className="map-canvas"
+      aria-label={route ? "Interactive route map" : "Interactive map of Melbourne CBD"}
+    />
+  );
 }

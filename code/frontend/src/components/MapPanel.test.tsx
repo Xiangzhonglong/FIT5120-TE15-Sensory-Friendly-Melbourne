@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { routeSearchResponse } from "../test/fixtures";
 import { MapPanel } from "./MapPanel";
 
@@ -86,6 +86,10 @@ vi.mock("mapbox-gl", () => {
 describe("MapPanel", () => {
   const route = routeSearchResponse.routes[0];
 
+  beforeEach(() => {
+    Object.values(mapboxMocks).forEach((mock) => mock.mockReset());
+  });
+
   it("uses the schematic map when no browser token is configured", () => {
     render(
       <MapPanel
@@ -98,6 +102,28 @@ describe("MapPanel", () => {
 
     expect(screen.getByRole("img", { name: /schematic map/i })).toBeInTheDocument();
     expect(mapboxMocks.mapConstructor).not.toHaveBeenCalled();
+  });
+
+  it("shows the interactive Melbourne CBD base map before a route is selected", async () => {
+    vi.stubEnv("VITE_MAPBOX_TOKEN", "test-browser-token");
+
+    render(
+      <MapPanel
+        route={undefined}
+        quietSpaces={[]}
+        selectedQuietSpace={undefined}
+        transportAccess={[]}
+      />
+    );
+
+    expect(screen.getByLabelText("Interactive map of Melbourne CBD")).toBeInTheDocument();
+    await waitFor(() => expect(mapboxMocks.mapConstructor).toHaveBeenCalledWith(
+      expect.objectContaining({
+        center: [144.9631, -37.812],
+        zoom: 14.2
+      })
+    ));
+    expect(mapboxMocks.addSource).not.toHaveBeenCalled();
   });
 
   it("initialises the Mapbox renderer without requiring WebGL in jsdom", async () => {
