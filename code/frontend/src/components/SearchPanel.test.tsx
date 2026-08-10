@@ -23,6 +23,22 @@ function renderPanel(overrides: Partial<Parameters<typeof SearchPanel>[0]> = {})
 }
 
 describe("SearchPanel", () => {
+  it("starts with empty location fields and waits for both locations", () => {
+    renderPanel({ origin: "", destination: "" });
+
+    expect(screen.getByLabelText(/^starting point$/i)).toHaveValue("");
+    expect(screen.getByLabelText(/^starting point$/i)).toHaveAttribute(
+      "placeholder",
+      "Enter a starting point"
+    );
+    expect(screen.getByLabelText(/destination in melbourne cbd/i)).toHaveValue("");
+    expect(screen.getByLabelText(/destination in melbourne cbd/i)).toHaveAttribute(
+      "placeholder",
+      "Enter a Melbourne CBD destination"
+    );
+    expect(screen.getByRole("button", { name: /compare sensory-aware routes/i })).toBeDisabled();
+  });
+
   it("reports origin, destination and crowd-tolerance changes", () => {
     const props = renderPanel();
 
