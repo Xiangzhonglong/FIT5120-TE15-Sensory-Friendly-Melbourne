@@ -56,6 +56,7 @@ export function SearchPanel({
           id="origin"
           list="origin-suggestions"
           value={origin}
+          placeholder="Enter a starting point"
           maxLength={120}
           autoComplete="street-address"
           aria-describedby="origin-note"
@@ -85,6 +86,7 @@ export function SearchPanel({
           id="destination"
           list="destination-suggestions"
           value={destination}
+          placeholder="Enter a Melbourne CBD destination"
           maxLength={120}
           autoComplete="off"
           aria-describedby="destination-note"

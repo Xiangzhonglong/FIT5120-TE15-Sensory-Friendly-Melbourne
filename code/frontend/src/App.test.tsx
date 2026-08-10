@@ -9,6 +9,17 @@ const { geocodeLocationMock } = vi.hoisted(() => ({ geocodeLocationMock: vi.fn()
 vi.mock("./services/api", () => ({ searchRoutes: searchRoutesMock }));
 vi.mock("./services/geocoding", () => ({ geocodeLocation: geocodeLocationMock }));
 
+function submitSuggestedRoute(
+  origin = "Melbourne Town Hall",
+  destination = "Melbourne Central"
+) {
+  fireEvent.change(screen.getByLabelText(/^starting point$/i), { target: { value: origin } });
+  fireEvent.change(screen.getByLabelText(/destination in melbourne cbd/i), {
+    target: { value: destination }
+  });
+  fireEvent.click(screen.getByRole("button", { name: /compare sensory-aware routes/i }));
+}
+
 describe("App", () => {
   beforeEach(() => {
     searchRoutesMock.mockReset();
@@ -21,7 +32,13 @@ describe("App", () => {
     render(<App />);
 
     expect(screen.getByRole("heading", { name: /find a path that feels lighter/i })).toBeInTheDocument();
-    expect(screen.getByLabelText(/destination in melbourne cbd/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^starting point$/i)).toHaveValue("");
+    expect(screen.getByLabelText(/destination in melbourne cbd/i)).toHaveValue("");
+    expect(screen.getByRole("button", { name: /compare sensory-aware routes/i })).toBeDisabled();
+    expect(searchRoutesMock).not.toHaveBeenCalled();
+
+    submitSuggestedRoute();
+
     expect(await screen.findByRole("heading", { name: "Calmer via Russell Street", level: 3 })).toBeInTheDocument();
     expect(screen.getByText("Demo data")).toBeInTheDocument();
     expect(screen.getByText("DEMO ESTIMATE")).toBeInTheDocument();
@@ -39,6 +56,7 @@ describe("App", () => {
 
   it("updates the selected route from the route card", async () => {
     render(<App />);
+    submitSuggestedRoute();
     await screen.findByRole("heading", { name: "Direct via Swanston Street", level: 3 });
 
     fireEvent.click(screen.getByRole("button", { name: /view on map/i }));
@@ -49,17 +67,12 @@ describe("App", () => {
 
   it("submits the selected destination and crowd threshold", async () => {
     render(<App />);
-    await screen.findByRole("heading", { name: "Calmer via Russell Street", level: 3 });
-
-    fireEvent.change(screen.getByLabelText(/destination in melbourne cbd/i), {
-      target: { value: "Flinders Street Station" }
-    });
     fireEvent.change(screen.getByRole("slider", { name: /crowd tolerance/i }), {
       target: { value: "0.4" }
     });
-    fireEvent.click(screen.getByRole("button", { name: /compare sensory-aware routes/i }));
+    submitSuggestedRoute("Melbourne Town Hall", "Flinders Street Station");
 
-    await waitFor(() => expect(searchRoutesMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(searchRoutesMock).toHaveBeenCalledOnce());
     expect(searchRoutesMock).toHaveBeenLastCalledWith({
       origin: { lat: -37.8136, lng: 144.9631 },
       destination: { lat: -37.8183, lng: 144.9671 },
@@ -73,17 +86,9 @@ describe("App", () => {
       ? { lat: -37.8141, lng: 144.9702 }
       : { lat: -37.8177, lng: 144.9668 });
     render(<App />);
-    await screen.findByRole("heading", { name: "Calmer via Russell Street", level: 3 });
+    submitSuggestedRoute("100 Collins Street, Melbourne", "200 Collins Street, Melbourne");
 
-    fireEvent.change(screen.getByLabelText(/^starting point$/i), {
-      target: { value: "100 Collins Street, Melbourne" }
-    });
-    fireEvent.change(screen.getByLabelText(/destination in melbourne cbd/i), {
-      target: { value: "200 Collins Street, Melbourne" }
-    });
-    fireEvent.click(screen.getByRole("button", { name: /compare sensory-aware routes/i }));
-
-    await waitFor(() => expect(searchRoutesMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(searchRoutesMock).toHaveBeenCalledOnce());
     expect(geocodeLocationMock).toHaveBeenNthCalledWith(1, "100 Collins Street, Melbourne", {
       accessToken: undefined,
       restrictToCbd: false
@@ -109,13 +114,15 @@ describe("App", () => {
       value: { getCurrentPosition }
     });
     render(<App />);
-    await screen.findByRole("heading", { name: "Calmer via Russell Street", level: 3 });
 
     fireEvent.click(screen.getByRole("button", { name: /use my location/i }));
     expect(screen.getByLabelText(/^starting point$/i)).toHaveValue("Current location");
+    fireEvent.change(screen.getByLabelText(/destination in melbourne cbd/i), {
+      target: { value: "Melbourne Central" }
+    });
     fireEvent.click(screen.getByRole("button", { name: /compare sensory-aware routes/i }));
 
-    await waitFor(() => expect(searchRoutesMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(searchRoutesMock).toHaveBeenCalledOnce());
     expect(searchRoutesMock).toHaveBeenLastCalledWith({
       origin: { lat: -37.811, lng: 144.958 },
       destination: { lat: -37.8102, lng: 144.9628 },
@@ -126,6 +133,7 @@ describe("App", () => {
 
   it("focuses a pause space and routes to it only after explicit confirmation", async () => {
     render(<App />);
+    submitSuggestedRoute();
     await screen.findByRole("heading", { name: "Calmer via Russell Street", level: 3 });
     fireEvent.click(screen.getByRole("button", { name: /show 1 nearby place/i }));
 
@@ -149,6 +157,7 @@ describe("App", () => {
   it("shows an accessible error and retries a failed request", async () => {
     searchRoutesMock.mockRejectedValueOnce(new Error("The route service is unavailable."));
     render(<App />);
+    submitSuggestedRoute();
 
     expect(await screen.findByRole("alert")).toHaveTextContent("The route service is unavailable.");
 
@@ -164,6 +173,7 @@ describe("App", () => {
       { code: "UPSTREAM_TIMEOUT", status: 504, requestId: "request-123" }
     ));
     render(<App />);
+    submitSuggestedRoute();
 
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("Route services are temporarily unavailable.");
@@ -178,6 +188,7 @@ describe("App", () => {
       { code: "DESTINATION_OUTSIDE_CBD", status: 400, requestId: "request-456" }
     ));
     render(<App />);
+    submitSuggestedRoute();
 
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("Check your route details.");

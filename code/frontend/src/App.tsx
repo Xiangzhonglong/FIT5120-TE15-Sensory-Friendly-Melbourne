@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { ApiErrorCode, Coordinates, QuietSpace, RouteSearchResponse } from "@sensory-melbourne/contracts";
 import { AlertPanel } from "./components/AlertPanel";
 import { DataSources } from "./components/DataSources";
@@ -10,12 +10,7 @@ import { TransportAccess } from "./components/TransportAccess";
 import { searchRoutes, type RouteSearchError } from "./services/api";
 import { formatMelbourneDateTime } from "./services/dateTime";
 import { geocodeLocation } from "./services/geocoding";
-import {
-  DEFAULT_DESTINATION,
-  DEFAULT_ORIGIN,
-  findLocationSuggestion,
-  type LocationChoice
-} from "./services/locations";
+import { findLocationSuggestion } from "./services/locations";
 
 type LocationDraft = {
   label: string;
@@ -33,10 +28,6 @@ type RouteErrorView = {
   retryable: boolean;
   requestId?: string;
 };
-
-function locationDraft(choice: LocationChoice): LocationDraft {
-  return { label: choice.label, coordinates: choice.coordinates };
-}
 
 const dataModeLabels = {
   MOCK: "Demo data",
@@ -89,8 +80,8 @@ function presentRouteError(reason: unknown): RouteErrorView {
 }
 
 export function App() {
-  const [origin, setOrigin] = useState<LocationDraft>(() => locationDraft(DEFAULT_ORIGIN));
-  const [destination, setDestination] = useState<LocationDraft>(() => locationDraft(DEFAULT_DESTINATION));
+  const [origin, setOrigin] = useState<LocationDraft>({ label: "", coordinates: null });
+  const [destination, setDestination] = useState<LocationDraft>({ label: "", coordinates: null });
   const [threshold, setThreshold] = useState(0.6);
   const [result, setResult] = useState<RouteSearchResponse | null>(null);
   const [selectedRouteId, setSelectedRouteId] = useState<string>();
@@ -167,10 +158,6 @@ export function App() {
       setBusy(false);
     }
   }, [destination, mapboxToken, origin, threshold]);
-
-  useEffect(() => {
-    void runSearch();
-  }, []);
 
   const selectedRoute = useMemo(
     () => result?.routes.find((route) => route.id === selectedRouteId) ?? result?.routes[0],
